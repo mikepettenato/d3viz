@@ -10,7 +10,12 @@ module.exports =
             libraryTarget: 'window',
             // libraryExport: 'default'
         },
-        watch: true,
+        resolve: {
+            alias: {
+             'node_modules': path.join(__dirname, 'node_modules')
+            }
+        },
+        // watch: true,
         mode: 'development',
         devServer: {
             contentBase: __dirname,
