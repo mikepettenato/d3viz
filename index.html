@@ -1,0 +1,75 @@
+<html>
+<head>
+    <title>Test</title>
+    <script src="./dist/petcharts.js"></script>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div id="tooltip" class="tooltip"></div>
+<div class="container">
+    <div class="chartHeader"><h2>The Impact of COVID-19 on the Monthly Crime Rate in New York City</h2></div>
+    <div class="bubbleControls">
+        <input id="previous" type="button" value="<"> <span id="month">1</span> / <span id="year">2019</span> <input id="next" type="button" value=">">
+    </div>
+    <div class="row">
+        <div>
+            <svg id="bubbleCloud" height="800" width="700"  style="background-color: aliceblue">
+                <defs>
+                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+                        <feOffset dx="5" dy="5" result="offsetblur"/>
+                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+        <div>
+            <svg id="barChart" height="800" width="1100"  style="background-color: aliceblue">
+                <defs>
+                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+                        <feOffset dx="5" dy="5" result="offsetblur"/>
+                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+
+            </svg>
+        </div>
+    </div>
+</div>
+<script>
+        petcharts.NycCrimeDataLoader('/data/nyc2021.csv').then((data) => {
+            const overviewData = petcharts.processOverviewData(data)
+            const crimeCategories = petcharts.processCrimeCategories(data)
+            const crimeByMonth = petcharts.processCrimeByMonth(crimeCategories, overviewData)
+            // initialize tooltip
+            const tooltip = petcharts.ToolTip("div#tooltip")
+            petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
+            petcharts.BubbleCloud(
+                "svg#bubbleCloud",
+                // "div#tooltip",
+                tooltip,
+                crimeCategories,
+                overviewData,
+                crimeByMonth,
+                petcharts.ALL_RACES,
+                "span#year",
+                "span#month",
+                () => {
+                    petcharts.highlightBar("svg#barChart", "span#year", "span#month")
+                }
+            )
+        })
+</script>
+</body>
+</html>

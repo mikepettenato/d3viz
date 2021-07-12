@@ -1,0 +1,64 @@
+.tooltip {
+    opacity: 0;
+    height: 200px;
+    width: 375px;
+    z-index: 999;
+    background-color: white;
+    position: absolute;
+    border-radius: 25px;
+}
+
+.tooltipContainer {
+    display: flex;
+    margin: 10px;
+    flex-direction: column;
+}
+
+.toolTipHeader {
+    text-align: center;
+    padding: 10px;
+    font-weight: bold;
+    border-bottom: 1px solid darkslategray;
+}
+
+.tooltipBody {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+}
+
+.tooltipRow {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+}
+.tooltipCell {
+    padding: 5px;
+    border: 1px solid darkslategray;
+}
+
+.tooltipColHeader {
+    padding: 5px;
+    border: 1px solid darkslategray;
+    font-weight: bold;
+}
+
+.chartHeader {
+    width: 800px;
+    text-align: center;
+}
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+.bubbleControls {
+    align-items: center;
+}
