@@ -110,14 +110,6 @@ export const processDailyData = (data) => {
             const crimeStats = {}
             dailyCrimeByMonth[month] = crimeStats
         }
-        // if (!(item[OFFENSE] in dailyCrimeByMonth[month])) {
-        //     // const offenseType = item[OFFENSE]
-        //     // const offenses = {
-        //     //     offenseType: []
-        //     // }
-        //     dailyCrimeByMonth[month][item[OFFENSE]] = []
-        // }
-        // const offenses = dailyCrimeByMonth[month][item[OFFENSE]]
         crimeCategories.forEach(function(crimeCategory) {
             if (!(crimeCategory.name in dailyCrimeByMonth[month])) {
                 const name = crimeCategory.name
@@ -178,23 +170,5 @@ export const processCrimeCategories = (data) => {
 
 export async function NycCrimeDataLoader(url) {
     const crimeData = await csv(url)
-    // const processedCrimeData = processData(crimeData)
-
-    const data = await csv("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/data_stacked.csv")
-
-    console.log("data: " + JSON.stringify(data))
-
-    const subgroups = data.columns.slice(1)
-    console.log("subgroups = " + subgroups)
-
-    const groups = data.map(d => (d.group))
-    console.log("groups: " + groups)
-
-    const stackedData = stack()
-        .keys(subgroups)
-        (data)
-
-    console.log("stackedData: " + stackedData)
-
     return crimeData
 }

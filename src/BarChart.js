@@ -67,7 +67,7 @@ const chart_annotations = {
         '12/31/2019: 44 cases of COVID-19 in Wuhan, China'
     ],
     '2020-1' : [
-        "1/11/2020: China reports First COVID-19 deatch",
+        "1/11/2020: China reports First COVID-19 death",
         "1/21/2020: First confirmed COVID-19 case in U.S.",
         "1/30/2020: W.H.O. disignates COVID a Public-Health Emergency"
         ],
@@ -120,7 +120,6 @@ const drawAnnotations = (svg, date, x, y) => {
         numberOfAnnotations = chart_annotations[date].length
     }
     if ((date in chart_annotations)) {
-        console.log("Annotation : " + chart_annotations[date])
         const annotations = svg.append("g")
         annotations
             .attr("class", "annotations")
@@ -129,7 +128,7 @@ const drawAnnotations = (svg, date, x, y) => {
             .data(chart_annotations[date])
             .enter()
             .append("text")
-            .attr("y", (d, i) => i*16)
+            .attr("y", (d, i) => i*12)
             .attr("font-weight", 700)
             .style('font-size', 9)
             .style("fill", "darkorange")
@@ -149,8 +148,6 @@ export const highlightBar = (svgElement, elemYearId, elemMonthId) => {
             if (key == d.data[ARREST_DATE]) {
                 x = select(elements[i]).attr("x")
                 y = select(elements[i]).attr("y")
-                console.log(x)
-                console.log(select(elements[i]).attr("y"))
                 return 1
             }else{
                 return 0.1
@@ -221,8 +218,40 @@ const createLegend = (svg, categories, colors, width, margin) => {
 
 }
 
+const prePandemicMonths = [
+    '2019-1', '2019-2', '2019-3', '2019-4', '2019-5', '2019-6',
+    '2019-7', '2019-8', '2019-9', '2019-10', '2019-11',
+    '2019-12', '2020-1', '2020-2'
+]
 const createPrepandemicAnnotations = (svg, locations) => {
-    
+    const prepandemicAnnotations = svg.append("g")
+    prepandemicAnnotations.selectAll("circle")
+        .data(prePandemicMonths)
+        .enter()
+        .append("circle")
+        .attr("cx", d => {
+            return (locations[d]['x'] + 15)
+        })
+        .attr("cy", d=> locations[d]['y']-5)
+        .attr("r", 5)
+        .style("fill", 'limegreen')
+    prepandemicAnnotations
+        .append("circle")
+        .attr("cx", margin.left+15)
+        .attr("cy", margin.top/2)
+        .attr("r", 5)
+        .style("fill", 'limegreen')
+    prepandemicAnnotations
+        .append("text")
+        .attr("x", margin.left+30)
+        .attr("y", margin.top/2)
+        .text("Prepandemic Months")
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+        .style("fill", 'limegreen')
+        .style("font-size", 12)
+        .style('font-weight', 700)
+
 }
 
 export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, totalCrimeByMonth, elemYearId, elemMonthId) => {
@@ -270,11 +299,10 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
         .selectAll("text")
             .attr("transform", "rotate(-45)")
             .attr("x", (d, i) => {
-               return -1*(d.length + 17)
+               return -1*(d.length + 15)
             })
 
     const yDomain = findYDomain(totalCrimeByMonth)
-    console.log(yDomain)
 
     const yAxis = scaleLinear()
         .domain(yDomain)
@@ -362,10 +390,14 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
             return c
         })
         .on("mouseover", (e, d) => {
-            console.log(e.pageX + ", " + e.pageY)
-
             const crimeType = d.key
-            tooltip.showToolTip(tooltip.formatToolTip(crimeType, overviewData[mouseOverAssaultDate][crimeType]), e.pageX, e.pageY)
+            tooltip.showToolTip(tooltip.formatToolTip(
+                crimeType,
+                overviewData[mouseOverAssaultDate][crimeType],
+                totalCrimeByMonth[mouseOverAssaultDate],
+                mouseOverAssaultDate
+                ),
+                e.pageX, e.pageY)
             select(e.target).transition().attr("filter", "url(#dropshadow)")
         })
         .on("mousemove", (e, d) => {
@@ -389,19 +421,30 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
                 })
                 .attr("x", d => {
                     const xVal = xAxis(d.data[ARREST_DATE])
-                    barLocations[d.data[ARREST_DATE]] = xVal
+                    if (!(d.data[ARREST_DATE] in barLocations)) {
+                        barLocations[d.data[ARREST_DATE]] = {
+                            x: 0,
+                            y: 0
+                        }
+                    }
+                    barLocations[d.data[ARREST_DATE]]['x'] = xVal
                     return xVal
-                    barLocations[d.data[ARREST_DATE]] = xVal
                 })
                 .attr("y", d => {
                     const yVal = yAxis(d[1])
+                    if (!(d.data[ARREST_DATE] in barLocations)) {
+                        barLocations[d.data[ARREST_DATE]] = {
+                            x: 0,
+                            y: 0
+                        }
+                    }
+                    barLocations[d.data[ARREST_DATE]]['y'] = yVal
                     return yVal
                 })
                 .attr("height", d => yAxis(d[0]) - yAxis(d[1]))
                 .attr("width", d => xAxis.bandwidth())
             .on("mouseover", (e, d) => {
                 mouseOverAssaultDate = d.data[ARREST_DATE]
-                console.log("I am in a mouse over " + mouseOverAssaultDate)
             })
 
             createLegend(svg, categories, colors, width, margin)

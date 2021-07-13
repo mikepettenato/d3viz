@@ -41,11 +41,22 @@ const incrementDate = (yearStr, monthStr) => {
     }
 }
 
-// const findKey = (elemYearId, elemMonthId) => {
-//     const year = select(elemYearId).text()
-//     const month = select(elemMonthId).text()
-//     return `${year}-${month}`
-// }
+const decrementDate = (yearStr, monthStr) => {
+    let month = parseInt(monthStr)
+    let year = parseInt(yearStr)
+    month -= 1
+    if (month < 1 && year == 2019) {
+        month = 3
+        year = 2021
+    }else if (month < 1) {
+        month = 12
+        year -= 1
+    }
+    return {
+        month: month,
+        year: year
+    }
+}
 
 export async function BubbleCloud(svg_element, tooltip, categories, data, crimeByMonth, partition, elemYearId, elemMonthId, eventCallback) {
 
@@ -116,7 +127,14 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
             return category.color
         })
         .on("mouseover", (e, d) => {
-            tooltip.showToolTip(tooltip.formatToolTip(d.name, data[findKey(elemYearId, elemMonthId)][d.name]), e.pageX, e.pageY)
+            const monthDate = findKey(elemYearId, elemMonthId)
+            tooltip.showToolTip(tooltip.formatToolTip(
+                d.name,
+                data[monthDate][d.name],
+                crimeByMonth[monthDate],
+                monthDate,
+                ),
+                e.pageX, e.pageY)
             // tooltip.html(formatToolTip(d.name, data[findKey(elemYearId, elemMonthId)][d.name]))
             //     .style("opacity", 0.9)
             //     .style("left", (e.pageX + 20) + "px")
@@ -152,7 +170,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
     text
         .append("tspan")
             .text((category) => {
-                //console.log(category.name + " : " + category.color)
                 return category.name
             })
     const percentTspan = text.append("tspan")
@@ -228,5 +245,44 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         eventCallback()
 
     })
+
+    select("#previous").on("click", (e) => {
+        const year = select("span#year").text()
+        const month = select("span#month").text()
+        const newDate = decrementDate(year, month)
+        select("span#year").text((d) => {
+            return newDate.year
+        })
+        select("span#month").text((d) => {
+            return newDate.month
+        })
+
+        const key = findKey(elemYearId, elemMonthId)
+
+        circles.transition()
+            .duration(2000)
+            .attr("r", (category, i) => {
+                const allRaces = data[key][category.name][partition]
+                return scaledCircle(allRaces)
+            })
+
+        percentTspan
+            .transition()
+            .text((category) => {
+                // return d[ALL_RACES].toLocaleString()
+                const key = findKey(elemYearId, elemMonthId)
+                const total = crimeByMonth[key][ALL_RACES]
+                const categoryTotal = data[key][category.name][ALL_RACES]
+                return " " + (100*categoryTotal/total).toFixed(2) + "%"
+            })
+
+        simulation.force("xForce").initialize(categories)
+        simulation.force("yForce").initialize(categories)
+        simulation.force("no_collision").initialize(categories)
+        simulation.restart()
+        eventCallback()
+
+    })
+
 
 }
