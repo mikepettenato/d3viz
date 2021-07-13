@@ -209,7 +209,7 @@ const createLegend = (svg, categories, colors, width, margin) => {
         .enter()
         .append("text")
         .attr("x", 9)
-        .attr("y", (d, i) => i*16)
+        .attr("y", (d, i) => i*16+1)
         .text((d) => d)
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
@@ -237,14 +237,14 @@ const createPrepandemicAnnotations = (svg, locations) => {
         .style("fill", 'limegreen')
     prepandemicAnnotations
         .append("circle")
-        .attr("cx", margin.left+15)
+        .attr("cx", margin.left+215)
         .attr("cy", margin.top/2)
         .attr("r", 5)
         .style("fill", 'limegreen')
     prepandemicAnnotations
         .append("text")
-        .attr("x", margin.left+30)
-        .attr("y", margin.top/2)
+        .attr("x", margin.left+230)
+        .attr("y", margin.top/2 + 2)
         .text("Pre-pandemic Months")
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
@@ -302,6 +302,19 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
                return -1*(d.length + 15)
             })
 
+    svg
+        .append("text")
+        .attr("x" , (width - margin.left - 10))
+        .attr("y", (height - margin.bottom + 35))
+        .style("font-size", 11)
+        .text("Months →")
+
+
+    // svg.append("text")
+    //     .attr("x", margin.left)
+    //     .attr("y", margin.top)
+    //     .text("Hello Again")
+
     const yDomain = findYDomain(totalCrimeByMonth)
 
     const yAxis = scaleLinear()
@@ -311,6 +324,14 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
     svg.append("g")
         .attr("transform", `translate(${margin.left}, 0)`)
         .call(axisLeft().scale(yAxis))
+        .call(g => g.append("text")
+            .attr("x", margin.left/1.5)
+            .attr("y", margin.top - 5)
+            .attr("fill", "currentColor")
+            .attr("text-anchor", "end")
+            .text("↑ Crime Incidents")
+        )
+
 
     // show the (single) bars
     // svg.selectAll("rect")

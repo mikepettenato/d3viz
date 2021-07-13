@@ -68,7 +68,7 @@ export const ToolTip = (tooltipElement) => {
                             <div class="tooltipBody">
                                 <ul class="tooltipPara">
                                     <li class="tooltipListItems">NYC had <b>${totalCrime}</b> total criminal incidents in ${month}, ${year}.</li>  
-                                    <li class="tooltipListItems">${title} made up <b>${crimePercent}%</b> in NYC din ${month}, ${year}.</li>  
+                                    <li class="tooltipListItems">${title} made up <b>${crimePercent}%</b> in NYC in ${month}, ${year}.</li>  
                                 </ul>
 
                                 <div>Demographic Breakdown of Offenders</div>
