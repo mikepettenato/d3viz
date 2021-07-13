@@ -68,21 +68,21 @@ const chart_annotations = {
     ],
     '2020-1' : [
         "1/11/2020: China reports First COVID-19 death",
-        "1/21/2020: First confirmed COVID-19 case in U.S.",
-        "1/30/2020: W.H.O. disignates COVID a Public-Health Emergency"
+        "1/21/2020: First confirmed COVID-19 case in the U.S.",
+        "1/30/2020: W.H.O. designates COVID-19 a Public-Health Emergency"
         ],
-    '2020-2' : ["2/29/2020: First reported COVID-19 death in U.S."],
+    '2020-2' : ["2/29/2020: First reported COVID-19 death in the U.S."],
     '2020-3' : [
-        "3/7/2020: NYC State of Emergency due to COVID",
+        "3/7/2020: NYC State of Emergency due to COVID-19",
         "3/1/2020: First COVID-19 case in NY",
         "3/16/2021: NYC public schools close"
         ],
     '2020-4' : ["4/10/2020: NY State records more COVID-19 cases than any other country (other than U.S.)"],
-    '2020-5' : ["5/15/2020: Governer Cuomo allows drive-in theaters, ", "landscaping, low-risk recreational activies to reopen"],
+    '2020-5' : ["5/15/2020: Governor Cuomo allows drive-in theaters, ", "landscaping, low-risk recreational activities to reopen"],
     '2020-6' : [
         '6/24/2020: Quarantine Restrictions on Travelers Arriving in NY',
         '6/8/2020: NYC begins phase 1 reopening',
-        '6/22/2020: NYC begins phase 1 reopening'
+        '6/22/2020: NYC begins phase 2 reopening'
         ],
     '2020-7' : ['7/24/2020: NYC reports 227,517 COVID-19 cases and 22,934 deaths to date'],
     '2020-8' : [
@@ -93,7 +93,7 @@ const chart_annotations = {
         '9/8/2020: Sheriff deputies begin stopping buses headed to ',
         'Port Authority from hot spots, requiring quarantine forms to be signed',
         '9/9/2020: Malls in NYC reopen at 50% capacity',
-        '9/16/2020: Mayor de Blasio furloughs hist City Hall staff, including himself'
+        '9/16/2020: Mayor de Blasio furloughs his City Hall staff, including himself'
     ],
     '2020-11' :[
         '11/19/2020: NYC schools switch to all-remote',
@@ -245,7 +245,7 @@ const createPrepandemicAnnotations = (svg, locations) => {
         .append("text")
         .attr("x", margin.left+30)
         .attr("y", margin.top/2)
-        .text("Prepandemic Months")
+        .text("Pre-pandemic Months")
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
         .style("fill", 'limegreen')
