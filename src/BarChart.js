@@ -78,7 +78,7 @@ const chart_annotations = {
         "3/16/2021: NYC public schools close"
         ],
     '2020-4' : ["4/10/2020: NY State records more COVID-19 cases than any other country (other than U.S.)"],
-    '2020-5' : ["5/15/2020: Governor Cuomo allows drive-in theaters, ", "landscaping, low-risk recreational activities to reopen"],
+    '2020-5' : ["5/15/2020: Governor Cuomo allows drive-in theaters, landscaping, low-risk recreational activities reopen"],
     '2020-6' : [
         '6/24/2020: Quarantine Restrictions on Travelers Arriving in NY',
         '6/8/2020: NYC begins phase 1 reopening',
@@ -90,22 +90,17 @@ const chart_annotations = {
         '10/5/2020: NYC reports 252,000 COVID-19 cases and 23,861 deaths to date'
     ],
     '2020-9' : [
-        '9/8/2020: Sheriff deputies begin stopping buses headed to ',
-        'Port Authority from hot spots, requiring quarantine forms to be signed',
+        '9/8/2020: Sheriff deputies enforce signed quarantine forms from Port Authority buses',
         '9/9/2020: Malls in NYC reopen at 50% capacity',
         '9/16/2020: Mayor de Blasio furloughs his City Hall staff, including himself'
     ],
     '2020-11' :[
         '11/19/2020: NYC schools switch to all-remote',
-        '11/21/2020: Restrictions on indoor',
-        'dining are renewed in NYC'
+        '11/21/2020: Restrictions on indoordining are renewed in NYC'
     ],
     '2021-2': [
-        '2/11/2021: Restaurants reopen',
-        'indoor dining at 25% capacity',
-        '2/14/2021: New Yorkers with',
-        'underlying conditions become',
-        'eligible for COVID-19 vaccine'
+        '2/11/2021: Restaurants reopen indoor dining at 25% capacity',
+        '2/14/2021: New Yorkers with underlying eligible for COVID-19 vaccine'
     ]
 }
 
@@ -115,6 +110,10 @@ const clearAnnotations = (svg) => {
 
 const drawAnnotations = (svg, date, x, y) => {
     clearAnnotations(svg)
+
+    const height = svg.attr("height")
+    const width = svg.attr("height")
+
     let numberOfAnnotations = 0
     if (date in chart_annotations) {
         numberOfAnnotations = chart_annotations[date].length
@@ -123,16 +122,51 @@ const drawAnnotations = (svg, date, x, y) => {
         const annotations = svg.append("g")
         annotations
             .attr("class", "annotations")
-            .attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
+            //.attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
+            .attr("transform", `translate(${(width / 1.9)}, ${margin.top})`)
         annotations.selectAll("text")
             .data(chart_annotations[date])
             .enter()
             .append("text")
-            .attr("y", (d, i) => i*12)
+            .attr("y", (d, i) => -i*12)
             .attr("font-weight", 700)
-            .style('font-size', 9)
+            .style('font-size', 12)
             .style("fill", "darkorange")
             .text((d, i) => chart_annotations[date][i])
+
+
+        const lineForAnnotation = svg.append("g")
+        lineForAnnotation
+            .attr("class", "annotations")
+
+        lineForAnnotation.append("line")
+            .attr("x1", parseInt(x) + 15)
+            .attr("y1", y)
+            .attr("x2", (width / 1.9))
+            .attr("y2", margin.top)
+            .style("stroke", "slategray")
+            .style("stoke-width", 0.5)
+
+
+        // annotations.selectAll("line")
+        //     .data(chart_annotations[date])
+        //     .enter()
+        //     .append("line")
+        //     .attr("x1", parseInt(x)+15)
+        //     .attr("y1", y)
+        //     .attr("x2", parseInt(x)+15)
+        //     .attr("y2", y-118)
+        //     .style("stroke", "darkorange")
+        //     .style("stroke-width", 3)
+
+        // annotations.selectAll("text")
+        //     .data(chart_annotations[date])
+        //     .enter()
+        //     .append("text")
+        //     //.attr("x", margin.top / 2)
+        //     //.attr("y", height/2)
+        //     .style("fill", "darkorange")
+        //     .text("Hello there")
     }
 
 }
@@ -224,6 +258,7 @@ const prePandemicMonths = [
     '2019-12', '2020-1', '2020-2'
 ]
 const createPrepandemicAnnotations = (svg, locations) => {
+
     const prepandemicAnnotations = svg.append("g")
     prepandemicAnnotations.selectAll("circle")
         .data(prePandemicMonths)
