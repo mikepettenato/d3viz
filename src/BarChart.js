@@ -67,40 +67,40 @@ const chart_annotations = {
         '12/31/2019: 44 cases of COVID-19 in Wuhan, China'
     ],
     '2020-1' : [
-        "1/11/2020: China reports First COVID-19 death",
-        "1/21/2020: First confirmed COVID-19 case in the U.S.",
-        "1/30/2020: W.H.O. designates COVID-19 a Public-Health Emergency"
+        "01/11/2020: China reports First COVID-19 death",
+        "01/21/2020: First confirmed COVID-19 case in the U.S.",
+        "01/30/2020: W.H.O. designates COVID-19 a Public-Health Emergency"
         ],
     '2020-2' : ["2/29/2020: First reported COVID-19 death in the U.S."],
     '2020-3' : [
-        "3/7/2020: NYC State of Emergency due to COVID-19",
-        "3/1/2020: First COVID-19 case in NY",
-        "3/16/2021: NYC public schools close"
+        "03/07/2020: NYC State of Emergency due to COVID-19",
+        "03/1/2020: First COVID-19 case in NY",
+        "03/16/2021: NYC public schools close"
         ],
-    '2020-4' : ["4/10/2020: NY State records more COVID-19 cases than any other country (other than U.S.)"],
-    '2020-5' : ["5/15/2020: Governor Cuomo allows drive-in theaters, landscaping, low-risk recreational activities reopen"],
+    '2020-4' : ["4/10/2020: NY State records more COVID-19 cases than any other country"],
+    '2020-5' : ["5/15/2020: Drive-in theaters, landscaping, low-risk recreational activities reopen"],
     '2020-6' : [
-        '6/24/2020: Quarantine Restrictions on Travelers Arriving in NY',
-        '6/8/2020: NYC begins phase 1 reopening',
-        '6/22/2020: NYC begins phase 2 reopening'
+        '06/24/2020: Quarantine Restrictions on Travelers Arriving in NY',
+        '06/08/2020: NYC begins phase 1 reopening',
+        '06/22/2020: NYC begins phase 2 reopening'
         ],
     '2020-7' : ['7/24/2020: NYC reports 227,517 COVID-19 cases and 22,934 deaths to date'],
     '2020-8' : [
-        '10/1/2020: NYC middle and high schools begin in-person learning',
-        '10/5/2020: NYC reports 252,000 COVID-19 cases and 23,861 deaths to date'
+        '10/01/2020: NYC middle and high schools begin in-person learning',
+        '10/05/2020: NYC reports 252,000 COVID-19 cases and 23,861 deaths to date'
     ],
     '2020-9' : [
-        '9/8/2020: Sheriff deputies enforce signed quarantine forms from Port Authority buses',
-        '9/9/2020: Malls in NYC reopen at 50% capacity',
-        '9/16/2020: Mayor de Blasio furloughs his City Hall staff, including himself'
+        '09/08/2020: Sheriff deputies enforce signed quarantine forms from Port Authority buses',
+        '09/09/2020: Malls in NYC reopen at 50% capacity',
+        '09/16/2020: Mayor de Blasio furloughs his City Hall staff, including himself'
     ],
     '2020-11' :[
         '11/19/2020: NYC schools switch to all-remote',
-        '11/21/2020: Restrictions on indoordining are renewed in NYC'
+        '11/21/2020: Restrictions on indoor dining are renewed in NYC'
     ],
     '2021-2': [
-        '2/11/2021: Restaurants reopen indoor dining at 25% capacity',
-        '2/14/2021: New Yorkers with underlying eligible for COVID-19 vaccine'
+        '02/11/2021: Restaurants reopen indoor dining at 25% capacity',
+        '02/14/2021: New Yorkers with underlying conditions eligible for COVID-19 vaccine'
     ]
 }
 
@@ -123,12 +123,13 @@ const drawAnnotations = (svg, date, x, y) => {
         annotations
             .attr("class", "annotations")
             //.attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
-            .attr("transform", `translate(${(width / 1.9)}, ${margin.top})`)
+            .attr("transform", `translate(${(width)/1.9}, ${margin.top})`)
         annotations.selectAll("text")
             .data(chart_annotations[date])
             .enter()
             .append("text")
-            .attr("y", (d, i) => -i*12)
+            .attr("y", (d, i) => -i*14)
+            //.attr("text-anchor", "middle")
             .attr("font-weight", 700)
             .style('font-size', 12)
             .style("fill", "darkorange")

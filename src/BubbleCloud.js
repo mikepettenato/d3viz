@@ -58,6 +58,90 @@ const decrementDate = (yearStr, monthStr) => {
     }
 }
 
+const clearAnnotations = (svg) => {
+    svg.selectAll("g.annotation").remove()
+}
+
+const chart_annotations = {
+    '2019-1': {
+        crimeType:  'ASSAULT',
+        text: 'Assault makes up the largest percentage of crime in NYC'
+    },
+    '2019-6': {
+        crimeType:  'ASSAULT',
+        text: 'Assault records the largest percentage in crime for a pre-pandemic month'
+    },
+    '2019-7': {
+        crimeType:  'ASSAULT',
+        text: 'Assault records its largest number of monthly incidents in NYC'
+    },
+    '2019-12': {
+        crimeType:  'MURDER',
+        text: 'Murder records its smallest number of monthly incidents in NYC'
+    },
+    '2020-3': {
+        crimeType:  'MURDER',
+        text: 'NYC locks down.  While other crime rates fall, murder has a slight up-tick'
+    },
+    '2020-4': {
+        crimeType:  'MURDER',
+        text: 'While most of the other crime incidents see a large decrease, murder does not'
+    },
+    '2020-6': {
+        crimeType:  'FELONY DRUGS',
+        text: 'Felony Drug crimes sees its lowest crime percentage'
+    },
+    '2020-7': {
+        crimeType:  'ASSAULT',
+        text: 'Assault makes up largest percentage of crime, however, totals are down ~40% from pre-pandemic numbers'
+    },
+    '2020-12': {
+        crimeType:  'FELONY DRUGS',
+        text: 'Felony Drug crimes sees its lowest crime percentage'
+    },
+    '2021-3': {
+        crimeType: 'MURDER',
+        text: "While most other crime rates are down, murder hits its highest percentage and highest total per month"
+    }
+}
+const drawAnnotations = (svg, date, height, width) => {
+
+    clearAnnotations(svg)
+
+    if (date in chart_annotations) {
+        const crimeType = chart_annotations[date].crimeType
+        const text = chart_annotations[date].text
+        const cx = parseInt(svg.select(`circle#${crimeType.replace(" ", "_")}`).attr("cx"))
+        const cy = parseInt(svg.select(`circle#${crimeType.replace(" ", "_")}`).attr("cy"))
+
+        const textAnnotation = svg.append("g")
+        textAnnotation.attr("class", "annotation")
+        textAnnotation
+            .append("text")
+            .attr("class", "annotation")
+            .attr("x", width / 2)
+            .attr("y", 20)
+            .style("fill", "darkorange")
+            .style('font-size', 12)
+            .attr("font-weight", 700)
+            .attr("text-anchor", "middle")
+            .text(text)
+
+        const lineAnnotation = svg.append("g")
+        lineAnnotation.attr("class", "annotation")
+        lineAnnotation
+            .append("line")
+            .attr("x1", cx)
+            .attr("y1", cy)
+            .attr("x2", width / 2)
+            .attr("y2", 20)
+            .style("stroke", "slategray")
+            .style("stoke-width", 0.5)
+    }
+
+
+}
+
 export async function BubbleCloud(svg_element, tooltip, categories, data, crimeByMonth, partition, elemYearId, elemMonthId, eventCallback) {
 
     // const formatToolTip = (name) => {
@@ -118,6 +202,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .data(categories)
         .enter()
         .append("circle")
+        .attr("id", (category) => category.name.replace(" ", "_"))
         .attr("r", (category, i) => {
             const key = findKey(elemYearId, elemMonthId)
             const allRaces = data[key][category.name][partition]
@@ -207,6 +292,11 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
                     return d.y
                 })
         })
+        .on("end", () => {
+            // draw any of the annotations after the circles
+            // have moved into place
+            drawAnnotations(svg, findKey(elemYearId, elemMonthId), height, width)
+        })
 
     select("#next").on("click", (e) => {
         const year = select("span#year").text()
@@ -281,8 +371,8 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         simulation.force("no_collision").initialize(categories)
         simulation.restart()
         eventCallback()
-
     })
+
 
 
 }
