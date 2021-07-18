@@ -8,31 +8,23 @@
 <div id="tooltip" class="tooltip"></div>
 <div class="container">
     <div class="chartHeader">The Impact of COVID-19 on the Monthly Crime Rate in New York City</div>
-    <div class="para">
+    <div class="para" style="display: none">
         The COVID-19 pandemic has affected our lives in many ways.
         One way that this can be viewed is through its affect on the New York City crime rates.
         This is especially noticable in the beginning few months of the pandemic.
     </div>
     <div class="bubbleControls">
-        <input id="previous" type="button" value="<" style="height:30px"> <span id="month" class="controls">1</span><span class="controls">/</span><span id="year" class="controls">2019</span> <input id="next" type="button" value=">" style="height:30px">
-    </div>
-    <div class="row">
-        <div>
-            <svg id="bubbleCloud" height="800" width="700"  style="background-color: white">
-                <defs>
-                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
-                        <feOffset dx="5" dy="5" result="offsetblur"/>
-                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
-                        <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-            </svg>
+        <svg id="freeExploreMessageSvg" height="60" width="275"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
+        <div id="martini_controls">
+<!--            <input id="previous" type="button" value="<" style="height:30px"> <span id="month" class="controls">1</span><span class="controls">/</span><span id="year" class="controls">2019</span> <input id="next" type="button" value=">" style="height:30px">-->
         </div>
+        <svg id="startMessageSvg" height="30" width="100"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
+
+
+    </div>
+</div>
+<div class="chartContainer">
+    <div class="row">
         <div>
             <svg id="barChart" height="800" width="1100"  style="background-color: white">
                 <defs>
@@ -50,30 +42,53 @@
 
             </svg>
         </div>
+        <div id="bubbleCloudDiv" style="display: none">
+            <svg id="bubbleCloud" height="800" width="700"  style="background-color: white">
+                <defs>
+                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+                        <feOffset dx="5" dy="5" result="offsetblur"/>
+                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
     </div>
 </div>
 <script>
+        const martiniController = petcharts.MartiniControls("div#martini_controls", "svg#startMessageSvg", "svg#freeExploreMessageSvg")
         petcharts.NycCrimeDataLoader('./data/nyc2021.csv').then((data) => {
-            const overviewData = petcharts.processOverviewData(data)
-            const crimeCategories = petcharts.processCrimeCategories(data)
-            const crimeByMonth = petcharts.processCrimeByMonth(crimeCategories, overviewData)
-            // initialize tooltip
-            const tooltip = petcharts.ToolTip("div#tooltip")
-            petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
-            petcharts.BubbleCloud(
-                "svg#bubbleCloud",
-                // "div#tooltip",
-                tooltip,
-                crimeCategories,
-                overviewData,
-                crimeByMonth,
-                petcharts.ALL_RACES,
-                "span#year",
-                "span#month",
-                () => {
-                    petcharts.highlightBar("svg#barChart", "span#year", "span#month")
-                }
-            )
+            (async () => {
+                martiniController.controls()
+                const overviewData = petcharts.processOverviewData(data)
+                const crimeCategories = petcharts.processCrimeCategories(data)
+                const crimeByMonth = petcharts.processCrimeByMonth(crimeCategories, overviewData)
+                // initialize tooltip
+                const tooltip = petcharts.ToolTip("div#tooltip")
+                const barChartControls = await petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
+                const bubblChartControls = await petcharts.BubbleCloud(
+                    "svg#bubbleCloud",
+                    tooltip,
+                    crimeCategories,
+                    overviewData,
+                    crimeByMonth,
+                    petcharts.ALL_RACES,
+                    "span#year",
+                    "span#month",
+                    () => {
+                        petcharts.highlightBar("svg#barChart", "span#year", "span#month")
+                    }
+                )
+                martiniController.enableEvents(bubblChartControls, barChartControls, tooltip)
+                //     .then((bubbleChartTransitions) => {
+                //     martiniController.enableEvents(bubbleChartTransitions)
+                // })
+            })()
         })
 </script>
 </body>

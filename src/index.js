@@ -5,6 +5,7 @@ import {
 
 import {BubbleCloud} from './BubbleCloud'
 import {BarChart, highlightBar} from './BarChart'
+import {MartiniControls} from "./MartiniControls";
 import {findKey, ToolTip} from "./Utils"
 
 export {
@@ -17,6 +18,7 @@ export {
     findKey,
     highlightBar,
     HISPANIC,
+    MartiniControls,
     NycCrimeDataLoader,
     OFFENSE,
     processCrimeCategories,

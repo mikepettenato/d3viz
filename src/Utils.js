@@ -13,9 +13,15 @@ const months = [
     "September", "October", "November", "December"
 ]
 export const ToolTip = (tooltipElement) => {
-
+    let tooltipsEnabled = false
     return {
+        enable: () => {
+            tooltipsEnabled = true
+        },
         moveToolTip: (pageX, pageY) => {
+            if (!tooltipsEnabled) {
+                return
+            }
             // select the tooltip
             const tooltip = select(tooltipElement)
 
@@ -40,6 +46,9 @@ export const ToolTip = (tooltipElement) => {
 
         },
         showToolTip: (tooltipHtml, pageX, pageY) => {
+            if (!tooltipsEnabled) {
+                return
+            }
             // select the tooltip
             const tooltip = select(tooltipElement)
 
@@ -52,6 +61,9 @@ export const ToolTip = (tooltipElement) => {
 
         },
         formatToolTip: (title, data, crimeByMonth, monthDate) => {
+            if (!tooltipsEnabled) {
+                return
+            }
             const year = monthDate.split('-')[0]
             const monthIndex = monthDate.split('-')[1]
             const month = months[monthIndex-1]
@@ -103,6 +115,9 @@ export const ToolTip = (tooltipElement) => {
             `
         },
         hideToolTip: () => {
+            if (!tooltipsEnabled) {
+                return
+            }
             const tooltip = select(tooltipElement)
             tooltip
                 .style("opacity", 0)

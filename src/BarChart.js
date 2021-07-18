@@ -1,5 +1,6 @@
 import {stack} from 'd3'
 import {axisLeft, axisBottom} from 'd3-axis'
+import {easeLinear} from 'd3-ease'
 import {scaleBand, scaleLinear, scaleOrdinal, scaleQuantize, scaleQuantile, scaleSqrt} from 'd3-scale'
 import {select, selectAll} from 'd3-selection'
 import {ALL_RACES, ARREST_DATE, ASIAN_PACIFIC_ISLANDER, BLACK, HISPANIC, WHITE} from "./NycCrimeDataLoader"
@@ -61,46 +62,100 @@ const findKey = (elemYearId, elemMonthId) => {
 
 const chart_annotations = {
     '2019-11' : [
-        '11/17/2019: First Reported Case of COVID-19 in Hubei Provenance, China'
+        //, on November 11, 2019
+        'The first reported case of COVID-19 occurs in Hubei Provenance, China.',
+        "New Yorkers are largely unaware of the virus and there have been",
+        "8,395 crimes committed in New York City this month."
     ],
     '2019-12' : [
-        '12/31/2019: 44 cases of COVID-19 in Wuhan, China'
+        //  on December 31, 2019
+        '44 cases of COVID-19 are reported in Wuhan, China and none in New York.',
+        '7,308 criminal incidents occurred this month, which is consistent with ',
+        'the previous monthly averages for December.'
     ],
     '2020-1' : [
-        "01/11/2020: China reports First COVID-19 death",
-        "01/21/2020: First confirmed COVID-19 case in the U.S.",
-        "01/30/2020: W.H.O. designates COVID-19 a Public-Health Emergency"
+        //on January 11, 2019
+        "China reports its first COVID-19 death and the first",
+        // on January 21, 2020
+        "confirmed COVID-19 case occurs in the U.S.",
+        "8,931 crimes have occurred this month."
         ],
-    '2020-2' : ["2/29/2020: First reported COVID-19 death in the U.S."],
+    '2020-2' : [
+        // On January 30, 2020
+        "W.H.O. designates COVID-19 a Public-Health Emergency and the",
+        //2/29/2020:
+        "first reported COVID-19 death occurs in the U.S. There are ",
+        "8,367 crimes this month."
+    ],
     '2020-3' : [
-        "03/07/2020: NYC State of Emergency due to COVID-19",
-        "03/1/2020: First COVID-19 case in NY",
-        "03/16/2021: NYC public schools close"
+        // 03/07/2020:
+        "The first COVID-19 case occurs in New York, and New York City",
+        "declares a State of Emergency due to COVID-19.",
+        // 03/1/2020:
+        // 03/16/2021:
+        "NYC public schools close due to fear of the virus.",
+        "New Yorkers that can telecommute to work, start to do so."
         ],
-    '2020-4' : ["4/10/2020: NY State records more COVID-19 cases than any other country"],
-    '2020-5' : ["5/15/2020: Drive-in theaters, landscaping, low-risk recreational activities reopen"],
+    '2020-4' : [
+        // 4/10/2020:
+        "NY State records more COVID-19 cases than any other country other than the U.S.",
+        "New York City is in its first full month of lock down. ",
+        "5,006 crimes committed this month, which constitutes a",
+        "49% decrease in crime compared to the same time last year.",
+    ],
+    '2020-5' : [
+        // 5/15/2020:
+        "New York tries to lift some restrictions. Drive-in theaters, landscaping ",
+        "and low-risk recreational activities are reopened.  The COVID rates, ",
+        "however, are increasing at an alarming rate and New York",
+        "is running out of hospital ventilators."
+    ],
     '2020-6' : [
-        '06/24/2020: Quarantine Restrictions on Travelers Arriving in NY',
-        '06/08/2020: NYC begins phase 1 reopening',
-        '06/22/2020: NYC begins phase 2 reopening'
+        // '06/24/2020:
+        'New York is fully locked down.  Quarantine restrictions are now in affect for travelers',
+        'arriving in NY. The crime rate in NYC has dropped by 44% compared to last year.',
+        '5,069 crimes have occurred this month.'
+        // '06/08/2020: NYC begins phase 1 reopening',
+        // '06/22/2020: NYC begins phase 2 reopening'
         ],
-    '2020-7' : ['7/24/2020: NYC reports 227,517 COVID-19 cases and 22,934 deaths to date'],
+    '2020-7' : [
+        // 7/24/2020:
+        'NYC reports 227,517 COVID-19 cases and 22,934 deaths to date',
+        "The NYC crime rate drops 52% compared to last year.  There are ",
+        "4,894 criminal incidents reported this month."
+    ],
     '2020-8' : [
-        '10/01/2020: NYC middle and high schools begin in-person learning',
-        '10/05/2020: NYC reports 252,000 COVID-19 cases and 23,861 deaths to date'
+        // 10/01/2020:
+        'NYC middle and high schools begin in-person learning',
+        //10/05/2020:
+        'NYC reports 252,000 COVID-19 cases and 23,861 deaths to date'
     ],
     '2020-9' : [
-        '09/08/2020: Sheriff deputies enforce signed quarantine forms from Port Authority buses',
-        '09/09/2020: Malls in NYC reopen at 50% capacity',
-        '09/16/2020: Mayor de Blasio furloughs his City Hall staff, including himself'
+        // 09/08/2020:
+        'Sheriff deputies enforce signed quarantine forms from Port Authority buses',
+        // 09/09/2020:
+        'Malls in NYC reopen at 50% capacity',
+        // 09/16/2020:
+        'Mayor de Blasio furloughs his City Hall staff, including himself'
     ],
     '2020-11' :[
-        '11/19/2020: NYC schools switch to all-remote',
-        '11/21/2020: Restrictions on indoor dining are renewed in NYC'
+        // 11/19/2020:
+        'New York City schools switch to all-remote',
+        // 11/21/2020:
+        'Restrictions on indoor dining are renewed in New York City.'
     ],
     '2021-2': [
-        '02/11/2021: Restaurants reopen indoor dining at 25% capacity',
-        '02/14/2021: New Yorkers with underlying conditions eligible for COVID-19 vaccine'
+        // 02/11/2021:
+        'Restaurants reopen indoor dining at 25% capacity',
+        // 02/14/2021:
+        'New Yorkers with underlying conditions are eligible for COVID-19 vaccine.'
+    ],
+    '2021-3': [
+        // 02/11/2021:
+        'New York City has an 11.4% unemployment rate, due to the COVID-19 pandemic.',
+        "Restaurants start to reopen and create 15,0000 new jobs.",
+        // 02/14/2021:
+        'New York City\'s crime rate has increased by 5% when compared to March, 2020.'
     ]
 }
 
@@ -123,30 +178,30 @@ const drawAnnotations = (svg, date, x, y) => {
         annotations
             .attr("class", "annotations")
             //.attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
-            .attr("transform", `translate(${(width)/1.9}, ${margin.top})`)
+            .attr("transform", `translate(${(width)/2.2}, ${margin.top/1.5})`)
         annotations.selectAll("text")
             .data(chart_annotations[date])
             .enter()
             .append("text")
-            .attr("y", (d, i) => -i*14)
+            .attr("y", (d, i) => i*20)
             //.attr("text-anchor", "middle")
             .attr("font-weight", 700)
-            .style('font-size', 12)
+            .style('font-size', 16)
             .style("fill", "darkorange")
             .text((d, i) => chart_annotations[date][i])
 
 
-        const lineForAnnotation = svg.append("g")
-        lineForAnnotation
-            .attr("class", "annotations")
-
-        lineForAnnotation.append("line")
-            .attr("x1", parseInt(x) + 15)
-            .attr("y1", y)
-            .attr("x2", (width / 1.9))
-            .attr("y2", margin.top)
-            .style("stroke", "slategray")
-            .style("stoke-width", 0.5)
+        // const lineForAnnotation = svg.append("g")
+        // lineForAnnotation
+        //     .attr("class", "annotations")
+        //
+        // lineForAnnotation.append("line")
+        //     .attr("x1", parseInt(x) + 15)
+        //     .attr("y1", y)
+        //     .attr("x2", (width / 1.9))
+        //     .attr("y2", margin.top)
+        //     .style("stroke", "slategray")
+        //     .style("stoke-width", 0.5)
 
 
         // annotations.selectAll("line")
@@ -273,14 +328,14 @@ const createPrepandemicAnnotations = (svg, locations) => {
         .style("fill", 'limegreen')
     prepandemicAnnotations
         .append("circle")
-        .attr("cx", margin.left+215)
-        .attr("cy", margin.top/2)
+        .attr("cx", margin.left+105)
+        .attr("cy", margin.top/1.4)
         .attr("r", 5)
         .style("fill", 'limegreen')
     prepandemicAnnotations
         .append("text")
-        .attr("x", margin.left+230)
-        .attr("y", margin.top/2 + 2)
+        .attr("x", margin.left+120)
+        .attr("y", margin.top/1.4 + 2)
         .text("Pre-pandemic Months")
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
@@ -504,6 +559,102 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
                 mouseOverAssaultDate = d.data[ARREST_DATE]
             })
 
-            createLegend(svg, categories, colors, width, margin)
-            createPrepandemicAnnotations(svg, barLocations)
+
+    const start_message = [
+        '↑',
+        'Start Here',
+    ]
+    const clearStartMessage = () => {
+        svg.selectAll('g.start').remove()
+    }
+    const startMessage = () => {
+        const g = svg.append("g")
+        g.attr("class", "start")
+        g.selectAll("text")
+            .data(start_message)
+            .enter()
+            .append("text")
+            .attr("x", margin.left*5.65)
+            .attr("y", (d, i) => 25 + i*15)
+            .attr("text-anchor", "middle")
+            .style('font-size', '.75em')
+            .style('fill', 'gray')
+            .text((d) => d)
+        let num_times = 0
+        const repeatAnimation = () => {
+            g.selectAll("text")
+                .transition()
+                .ease(easeLinear)
+                .style('font-size', '1em')
+                .duration(500)
+                .delay(1000)
+                .transition()
+                .ease(easeLinear)
+                .style('font-size', '.75em')
+                .duration(500)
+                .on('end', (d) => {
+                    if (num_times < 3) {
+                        num_times++
+                        repeatAnimation()
+                    }
+                })
+        }
+        repeatAnimation()
+    }
+
+    const free_explore_message = [
+        '↑',
+        'Controls and additional info are Enabled.',
+        'Please feel free to Explore!'
+    ]
+    const clearFreeExploreMessage = () => {
+        svg.selectAll('g.free_explore').remove()
+    }
+    const freeExploreMessage = () => {
+        const g = svg.append("g")
+        g.attr("class", "free_explore")
+        g.selectAll("text")
+            .data(free_explore_message)
+            .enter()
+            .append("text")
+            .attr("x", margin.left*2.5)
+            .attr("y", (d, i) => 25 + i*15)
+            .attr("text-anchor", "middle")
+            .style('font-size', '.75em')
+            .style('fill', 'gray')
+            .text((d) => d)
+        let num_times = 0
+        const repeatAnimation = () => {
+            g.selectAll("text")
+                .transition()
+                .ease(easeLinear)
+                .style('font-size', '1em')
+                .duration(500)
+                .delay(1000)
+                .transition()
+                .ease(easeLinear)
+                .style('font-size', '.75em')
+                .duration(500)
+                .on('end', (d) => {
+                    if (num_times < 3) {
+                        num_times++
+                        repeatAnimation()
+                    }
+                })
+        }
+        repeatAnimation()
+    }
+
+    // Draws The first Annotation
+    drawAnnotations(svg, key, barLocations[key].x, barLocations[key].y)
+    createLegend(svg, categories, colors, width, margin)
+    createPrepandemicAnnotations(svg, barLocations)
+    //startMessage()
+
+    return {
+        //freeExploreMessage: freeExploreMessage,
+        //clearFreeExploreMessage: clearFreeExploreMessage,
+        startMessage: startMessage,
+        //clearStartMessage: clearStartMessage
+    }
 }

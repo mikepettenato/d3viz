@@ -1,4 +1,5 @@
 import {axisBottom} from 'd3-axis'
+import {easeLinear} from 'd3-ease'
 import {select, selectAll} from 'd3-selection'
 import transition from 'd3-transition'
 import {scaleLinear, scaleQuantize, scaleQuantile, scaleSqrt} from 'd3-scale'
@@ -22,40 +23,6 @@ const findRange = (map, type) => {
         })
     })
     return [min, max]
-}
-
-const incrementDate = (yearStr, monthStr) => {
-    let month = parseInt(monthStr)
-    let year = parseInt(yearStr)
-    month += 1
-    if (month > 3 && year == 2021) {
-        month = 1
-        year = 2019
-    }else if (month > 12) {
-        month = 1
-        year += 1
-    }
-    return {
-        month: month,
-        year: year
-    }
-}
-
-const decrementDate = (yearStr, monthStr) => {
-    let month = parseInt(monthStr)
-    let year = parseInt(yearStr)
-    month -= 1
-    if (month < 1 && year == 2019) {
-        month = 3
-        year = 2021
-    }else if (month < 1) {
-        month = 12
-        year -= 1
-    }
-    return {
-        month: month,
-        year: year
-    }
 }
 
 const clearAnnotations = (svg) => {
@@ -87,24 +54,49 @@ const chart_annotations = {
         crimeType:  'MURDER',
         text: 'While most of the other crime incidents see a large decrease, murder does not'
     },
+    '2020-5': {
+        crimeType:  'FELONY DRUGS',
+        text: 'Overall crime in NYC sees an uptick, Led by a Felony Drugs increase of 63% compared to the previous month'
+    },
     '2020-6': {
         crimeType:  'FELONY DRUGS',
         text: 'Felony Drug crimes sees its lowest crime percentage'
     },
     '2020-7': {
         crimeType:  'ASSAULT',
-        text: 'Assault makes up largest percentage of crime, however, totals are down ~40% from pre-pandemic numbers'
+        text: 'Assault makes up the largest percentage of crime, however, totals are down ~40% from pre-pandemic numbers'
+    },
+    '2020-8': {
+        crimeType: 'KIDNAPPING',
+        text: 'Kidnapping makes up the lowest type of crime in New York City'
+    },
+    '2020-9': {
+        crimeType:  'WEAPON POSSESSION',
+        text: 'Weapon Possession increases 47% from the previous month'
+    },
+    '2020-10': {
+        crimeType:  'GRAND LARCENY',
+        text: 'Grand Larceny increases 22% from the previous month'
     },
     '2020-12': {
-        crimeType:  'FELONY DRUGS',
-        text: 'Felony Drug crimes sees its lowest crime percentage'
+        crimeType:  'MURDER',
+        text: 'Murder records its highest number of monthly incidents and highest monthly percentage'
     },
     '2021-3': {
         crimeType: 'MURDER',
-        text: "While most other crime rates are down, murder hits its highest percentage and highest total per month"
+        text: "While most other crime rates are down, murder rates are above pre-pandemic rates"
     }
 }
-const drawAnnotations = (svg, date, height, width) => {
+
+const crimeTypeMap = (crimeCategories) => {
+    const crimeMap = {}
+    crimeCategories.forEach(category => {
+        crimeMap[category.name] = category.color
+    })
+    return crimeMap
+}
+
+const drawAnnotations = (svg, date, height, width, crimeMap) => {
 
     clearAnnotations(svg)
 
@@ -121,22 +113,30 @@ const drawAnnotations = (svg, date, height, width) => {
             .attr("class", "annotation")
             .attr("x", width / 2)
             .attr("y", 20)
-            .style("fill", "darkorange")
-            .style('font-size', 12)
-            .attr("font-weight", 700)
+            .style("fill", crimeMap[crimeType])
+            .style('font-size', '.25em')
             .attr("text-anchor", "middle")
             .text(text)
+        textAnnotation.selectAll("text")
+            .transition()
+            .ease(easeLinear)
+            .style('font-size', '1em')
+            .duration(500)
+            .transition()
+            .ease(easeLinear)
+            .style('font-size', '.85em')
+            .duration(500)
 
-        const lineAnnotation = svg.append("g")
-        lineAnnotation.attr("class", "annotation")
-        lineAnnotation
-            .append("line")
-            .attr("x1", cx)
-            .attr("y1", cy)
-            .attr("x2", width / 2)
-            .attr("y2", 20)
-            .style("stroke", "slategray")
-            .style("stoke-width", 0.5)
+        // const lineAnnotation = svg.append("g")
+        // lineAnnotation.attr("class", "annotation")
+        // lineAnnotation
+        //     .append("line")
+        //     .attr("x1", cx)
+        //     .attr("y1", cy)
+        //     .attr("x2", width / 2)
+        //     .attr("y2", 20)
+        //     .style("stroke", "slategray")
+        //     .style("stoke-width", 0.5)
     }
 
 
@@ -144,53 +144,11 @@ const drawAnnotations = (svg, date, height, width) => {
 
 export async function BubbleCloud(svg_element, tooltip, categories, data, crimeByMonth, partition, elemYearId, elemMonthId, eventCallback) {
 
-    // const formatToolTip = (name) => {
-    //     const key = findKey(elemYearId, elemMonthId)
-    //     const all = data[key][name][ALL_RACES]
-    //     const asian = data[key][name][ASIAN_PACIFIC_ISLANDER]
-    //     const black = data[key][name][BLACK]
-    //     const hispanic = data[key][name][HISPANIC]
-    //     const white = data[key][name][WHITE]
-    //     return `<div class="tooltipContainer">
-    //                 <div class="tooltipHeader">${name}</div>
-    //                 <div class="tooltipBody">
-    //                     <div>Demographic Breakdown</div>
-    //                     <div class="tooltipRow">
-    //                         <div class="tooltipCol">
-    //                             <div class="tooltipColHeader">All (total)</div>
-    //                             <div class="tooltipCell">${all}</div>
-    //                         </div>
-    //                         <div class="tooltipCol">
-    //                             <div class="tooltipColHeader">Asian</div>
-    //                             <div class="tooltipCell">${asian}</div>
-    //                         </div>
-    //                         <div class="tooltipCol">
-    //                             <div class="tooltipColHeader">Black</div>
-    //                             <div class="tooltipCell">${black}</div>
-    //                         </div>
-    //                         <div class="tooltipCol">
-    //                             <div class="tooltipColHeader">Hispanic</div>
-    //                             <div class="tooltipCell">${hispanic}</div>
-    //                         </div>
-    //                         <div class="tooltipCol">
-    //                             <div class="tooltipColHeader">White</div>
-    //                             <div class="tooltipCell">${white}</div>
-    //                         </div>
-    //                     </div>
-    //                     <div class="tooltipRow">
-    //
-    //                     </div>
-    //                 </div>
-    //             </div>
-    //
-    //             `
-    // }
-
-    // select the tooltip
-    //const tooltip = select(tooltipElement)
-
     const width = select(svg_element).attr("width")
     const height = select(svg_element).attr("height")
+    const crimeMap = crimeTypeMap(categories)
+    let enable_annotations = false
+
     const scaledCircle = scaleSqrt()
         .domain(findRange(data, partition))
         .range([30, 130])
@@ -220,10 +178,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
                 monthDate,
                 ),
                 e.pageX, e.pageY)
-            // tooltip.html(formatToolTip(d.name, data[findKey(elemYearId, elemMonthId)][d.name]))
-            //     .style("opacity", 0.9)
-            //     .style("left", (e.pageX + 20) + "px")
-            //     .style("top", e.pageY + "px")
 
             // Make circle appear to raise when hovered over
             select(e.target).transition().attr("filter", "url(#dropshadow)")
@@ -261,7 +215,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
 
     percentTspan
         .text((category) => {
-            // return d[ALL_RACES].toLocaleString()
             const key = findKey(elemYearId, elemMonthId)
             const total = crimeByMonth[key][ALL_RACES]
             const categoryTotal = data[key][category.name][ALL_RACES]
@@ -273,7 +226,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
     simulation.force("yForce", forceY(height/2).strength(0.05))
     simulation.force("no_collision", forceCollide((category) => {
         const key = findKey(elemYearId, elemMonthId)
-        return scaledCircle(data[key][category.name][partition]) + 2
+        return scaledCircle(data[key][category.name][partition]) + 3
     }))
     simulation.nodes(categories)
         .on("tick", () => {
@@ -295,20 +248,43 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .on("end", () => {
             // draw any of the annotations after the circles
             // have moved into place
-            drawAnnotations(svg, findKey(elemYearId, elemMonthId), height, width)
+            if (enable_annotations) {
+                drawAnnotations(svg, findKey(elemYearId, elemMonthId), height, width, crimeMap)
+            }
         })
 
-    select("#next").on("click", (e) => {
-        const year = select("span#year").text()
-        const month = select("span#month").text()
-        const newDate = incrementDate(year, month)
-        select("span#year").text((d) => {
-            return newDate.year
-        })
-        select("span#month").text((d) => {
-            return newDate.month
-        })
+    const martiniGlassSlideShow = [
+        ['2019-11']
+    ]
 
+    const forward = () => {
+        const key = findKey(elemYearId, elemMonthId)
+
+        circles.transition()
+            .duration(2000)
+            .attr("r", (category, i) => {
+                const allRaces = data[key][category.name][partition]
+                return scaledCircle(allRaces)
+            })
+
+        percentTspan
+            .transition()
+            .text((category) => {
+                // return d[ALL_RACES].toLocaleString()
+                const key = findKey(elemYearId, elemMonthId)
+                const total = crimeByMonth[key][ALL_RACES]
+                const categoryTotal = data[key][category.name][ALL_RACES]
+                return " " + (100*categoryTotal/total).toFixed(2) + "%"
+            })
+
+        simulation.force("xForce").initialize(categories)
+        simulation.force("yForce").initialize(categories)
+        simulation.force("no_collision").initialize(categories)
+        simulation.restart()
+        eventCallback()
+    }
+
+    const backwards = () => {
         const key = findKey(elemYearId, elemMonthId)
 
         circles.transition()
@@ -334,45 +310,21 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         simulation.restart()
         eventCallback()
 
-    })
+    }
 
-    select("#previous").on("click", (e) => {
-        const year = select("span#year").text()
-        const month = select("span#month").text()
-        const newDate = decrementDate(year, month)
-        select("span#year").text((d) => {
-            return newDate.year
-        })
-        select("span#month").text((d) => {
-            return newDate.month
-        })
+    const enableAnnotations = () => {
+        enable_annotations = true
+    }
 
-        const key = findKey(elemYearId, elemMonthId)
+    const enable = () => {
+        select("div#bubbleCloudDiv")
+            .style("display", "block")
+    }
 
-        circles.transition()
-            .duration(2000)
-            .attr("r", (category, i) => {
-                const allRaces = data[key][category.name][partition]
-                return scaledCircle(allRaces)
-            })
-
-        percentTspan
-            .transition()
-            .text((category) => {
-                // return d[ALL_RACES].toLocaleString()
-                const key = findKey(elemYearId, elemMonthId)
-                const total = crimeByMonth[key][ALL_RACES]
-                const categoryTotal = data[key][category.name][ALL_RACES]
-                return " " + (100*categoryTotal/total).toFixed(2) + "%"
-            })
-
-        simulation.force("xForce").initialize(categories)
-        simulation.force("yForce").initialize(categories)
-        simulation.force("no_collision").initialize(categories)
-        simulation.restart()
-        eventCallback()
-    })
-
-
-
+    return {
+        forward: forward,
+        backwards: backwards,
+        enableAnnotations: enableAnnotations,
+        enable: enable
+    }
 }
