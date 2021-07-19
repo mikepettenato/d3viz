@@ -1,4 +1,5 @@
 import {axisBottom} from 'd3-axis'
+import {Delaunay} from 'd3-delaunay'
 import {easeLinear} from 'd3-ease'
 import {select, selectAll} from 'd3-selection'
 import transition from 'd3-transition'
@@ -161,6 +162,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .enter()
         .append("circle")
         .attr("id", (category) => category.name.replace(" ", "_"))
+        .attr("class", (category) => category.name.replace(" ", "_"))
         .attr("r", (category, i) => {
             const key = findKey(elemYearId, elemMonthId)
             const allRaces = data[key][category.name][partition]
@@ -169,6 +171,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .attr("fill", (category, i) => {
             return category.color
         })
+        /*
         .on("mouseover", (e, d) => {
             const monthDate = findKey(elemYearId, elemMonthId)
             tooltip.showToolTip(tooltip.formatToolTip(
@@ -180,6 +183,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
                 e.pageX, e.pageY)
 
             // Make circle appear to raise when hovered over
+
             select(e.target).transition().attr("filter", "url(#dropshadow)")
         })
         .on("mousemove", (e, d) => {
@@ -196,6 +200,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
             // Remove raised look look from circle
             select(e.target).transition().attr("filter", "")
         })
+        */
     const text = svg.selectAll("text")
         .data(categories)
         .enter()
@@ -251,6 +256,57 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
             if (enable_annotations) {
                 drawAnnotations(svg, findKey(elemYearId, elemMonthId), height, width, crimeMap)
             }
+
+            const centers = []
+            categories.forEach(category => {
+                const cx = svg.selectAll(`circle#${category.name.replace(" " , "_")}`).attr("cx")
+                const cy = svg.selectAll(`circle#${category.name.replace(" " , "_")}`).attr("cy")
+                console.log(`${cx} , ${cy}`)
+                centers.push([cx, cy])
+            })
+            // create voronoi graph
+            const delaunay = Delaunay.from(centers)
+            const voronoi = delaunay.voronoi([0, 0, width, height])
+
+            svg.append('path')
+                .attr('class', 'outline')
+                .attr('opacity', 0)
+                .attr('d', voronoi.render())
+                .attr('fill', 'none')
+                .attr('stroke', 'currentColor')
+
+            svg.append('path')
+                .attr('d', voronoi.renderBounds())
+                .attr('fill', 'none')
+                .attr('stroke', 'currentColor')
+
+            svg.selectAll('path.cell')
+                .data(categories)
+                .enter()
+                .append('path')
+                .attr('class', 'cell')
+                .attr('opacity', 0)
+                .attr('d', (d, i) => voronoi.renderCell(i))
+                .on('mouseover', (e, d) => {
+                    const monthDate = findKey(elemYearId, elemMonthId)
+                    tooltip.showToolTip(tooltip.formatToolTip(
+                        d.name,
+                        data[monthDate][d.name],
+                        crimeByMonth[monthDate],
+                        monthDate,
+                        ),
+                        e.pageX, e.pageY)
+
+                    select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "url(#dropshadow)")
+                })
+                .on('mousemove', (e, d) => {
+                    tooltip.moveToolTip(e.pageX, e.pageY)
+                })
+                .on('mouseleave', (e, d) => {
+                    tooltip.hideToolTip()
+                    select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "")
+                })
+
         })
 
     const martiniGlassSlideShow = [
@@ -270,7 +326,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         percentTspan
             .transition()
             .text((category) => {
-                // return d[ALL_RACES].toLocaleString()
                 const key = findKey(elemYearId, elemMonthId)
                 const total = crimeByMonth[key][ALL_RACES]
                 const categoryTotal = data[key][category.name][ALL_RACES]
