@@ -261,7 +261,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
             categories.forEach(category => {
                 const cx = svg.selectAll(`circle#${category.name.replace(" " , "_")}`).attr("cx")
                 const cy = svg.selectAll(`circle#${category.name.replace(" " , "_")}`).attr("cy")
-                console.log(`${cx} , ${cy}`)
                 centers.push([cx, cy])
             })
             // create voronoi graph
@@ -277,6 +276,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
 
             svg.append('path')
                 .attr('d', voronoi.renderBounds())
+                .attr('opacity', 0)
                 .attr('fill', 'none')
                 .attr('stroke', 'currentColor')
 

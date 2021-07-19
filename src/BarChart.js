@@ -61,6 +61,10 @@ const findKey = (elemYearId, elemMonthId) => {
 }
 
 const chart_annotations = {
+    '2019-5' : [
+        'Crime peaks in New York City with 10,250 crimes committed in the month.',
+        'COVID-19 is an unknown pathogen in the world'
+    ],
     '2019-11' : [
         //, on November 11, 2019
         'The first reported case of COVID-19 occurs in Hubei Provenance, China.',
@@ -651,10 +655,10 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
     createPrepandemicAnnotations(svg, barLocations)
     //startMessage()
 
-    return {
+    //return {
         //freeExploreMessage: freeExploreMessage,
         //clearFreeExploreMessage: clearFreeExploreMessage,
-        startMessage: startMessage,
+        //startMessage: startMessage,
         //clearStartMessage: clearStartMessage
-    }
+    //}
 }

@@ -68,7 +68,6 @@ const startMessage = (start_svg_element) => {
     const height = svg.attr("height")
     const width = svg.attr("width")
 
-    console.log(width)
     const g = svg.append("g")
     g.attr("class", "start")
     g.append("text")
@@ -163,7 +162,7 @@ export const MartiniControls = (martini_control_element, start_svg_element, free
 
     startMessage(start_svg_element)
 
-    const enableMartiniEvents = (bubbleChartControls, barChartControls, toolTipControls) => {
+    const enableMartiniEvents = (bubbleChartControls, toolTipControls) => {
         select("#next").on("click", (e) => {
             if (in_martini_stem) {
                 clearStartMessage(start_svg_element)

@@ -70,7 +70,7 @@
                 const crimeByMonth = petcharts.processCrimeByMonth(crimeCategories, overviewData)
                 // initialize tooltip
                 const tooltip = petcharts.ToolTip("div#tooltip")
-                const barChartControls = await petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
+                await petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
                 const bubblChartControls = await petcharts.BubbleCloud(
                     "svg#bubbleCloud",
                     tooltip,
@@ -84,7 +84,7 @@
                         petcharts.highlightBar("svg#barChart", "span#year", "span#month")
                     }
                 )
-                martiniController.enableEvents(bubblChartControls, barChartControls, tooltip)
+                martiniController.enableEvents(bubblChartControls, tooltip)
                 //     .then((bubbleChartTransitions) => {
                 //     martiniController.enableEvents(bubbleChartTransitions)
                 // })
