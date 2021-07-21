@@ -383,7 +383,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
 
     const enable = () => {
         select("div#lineChartDiv")
-            .style("display", "block")
+            // .style("display", "block")
+            .transition()
+            .duration(5000)
+            .style('opacity', 1)
+
     }
 
     return {

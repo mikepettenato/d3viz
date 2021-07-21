@@ -329,8 +329,12 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
     }
 
     const enable = () => {
-        select("div#bubbleCloudDiv")
-            .style("display", "block")
+        // select("div#bubbleCloudDiv")
+        //     .style("display", "block")
+        select('div#bubbleCloudDiv')
+            .transition()
+            .duration(5000)
+            .style('opacity', 1)
     }
 
     return {
