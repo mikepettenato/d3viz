@@ -99,6 +99,40 @@ export const processCrimeByMonth = (crimeCategories, data) => {
     return totalCrimeByMonth
 }
 
+export const processDailyCrimesMap = (data) => {
+    const dailyCrimeByMonth = {}
+    data.forEach((item, i) => {
+        const monthIndex = item[ARREST_DATE].split('/')[0]
+        const year = item[ARREST_DATE].split('/')[2]
+        const month = year + "-" + monthIndex
+        if (!(month in dailyCrimeByMonth)) {
+            dailyCrimeByMonth[month] = {}
+        }
+        if (!(item[ARREST_DATE] in dailyCrimeByMonth[month])) {
+            dailyCrimeByMonth[month][item[ARREST_DATE]] = {
+                'ALL': 0,
+                'ASIAN / PACIFIC ISLANDER': 0,
+                'BLACK': 0,
+                'HISPANIC': 0,
+                'WHITE': 0
+            }
+        }
+
+
+        const asian = item[RACE] == ASIAN_PACIFIC_ISLANDER ? parseInt(item[COUNT]) : 0
+        const black = item[RACE] == BLACK ? parseInt(item[COUNT]) : 0
+        const hispanic = item[RACE] == HISPANIC ? parseInt(item[COUNT]) : 0
+        const white = item[RACE] == WHITE ? parseInt(item[COUNT]) : 0
+        const offenses = dailyCrimeByMonth[month][item[ARREST_DATE]]
+        offenses['ALL'] +=  (asian + black + hispanic + white)
+        offenses['ASIAN / PACIFIC ISLANDER'] += asian
+        offenses['BLACK'] += black
+        offenses['HISPANIC'] += hispanic
+        offenses['WHITE'] += white
+    })
+    return dailyCrimeByMonth
+}
+
 export const processDailyData = (data) => {
     const crimeCategories = processCrimeCategories(data)
     const dailyCrimeByMonth = {}

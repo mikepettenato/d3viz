@@ -1,3 +1,37 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    /*align-items: center;*/
+    margin-left: 2em;
+}
+.chartHeader {
+    /*width: 1200px;*/
+    text-align: left;
+    font-family: Georgia, serif;
+    font-size: 25px;
+    width: 100%
+}
+
+.flexContainer {
+    display: flex;
+    flex-direction: row;
+    width:100%;
+}
+
+#martini_controls {
+    z-index: 999999;
+}
+
+.right {
+    padding-left: 30px;
+}
+
+all {
+    color: #00A0A0;
+}
+
+/* new stuff above*/
+
 .para {
     text-align: left;
     width: 100%;
@@ -59,18 +93,24 @@
     font-weight: bold;
 }
 
-.chartHeader {
-    width: 1200px;
-    text-align: center;
-    font-family: Georgia, serif;
-    font-size: 35px;
+.tooltipAll {
+    color: #00A0F0;
 }
 
-.container {
-    display: flex;
-    flex-direction: column;
-    /*align-items: center;*/
-    margin-left: 15em;
+.tooltipAsian {
+    color: #00FF00;
+}
+
+.tooltipBlack {
+    color: #C0C000;
+}
+
+.tooltipHispanic {
+    color: #A000FF;
+}
+
+.tooltipWhite {
+    color: #600000;
 }
 
 .chartContainer {
@@ -97,3 +137,4 @@
     margin-left: 5px;
     margin-right: 5px;
 }
+

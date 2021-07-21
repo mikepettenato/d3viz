@@ -182,7 +182,7 @@ const drawAnnotations = (svg, date, x, y) => {
         annotations
             .attr("class", "annotations")
             //.attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
-            .attr("transform", `translate(${(width)/2.2}, ${margin.top/1.5})`)
+            .attr("transform", `translate(${(width)/1.5}, ${margin.top/1.7})`)
         annotations.selectAll("text")
             .data(chart_annotations[date])
             .enter()
@@ -193,40 +193,6 @@ const drawAnnotations = (svg, date, x, y) => {
             .style('font-size', 16)
             .style("fill", "darkorange")
             .text((d, i) => chart_annotations[date][i])
-
-
-        // const lineForAnnotation = svg.append("g")
-        // lineForAnnotation
-        //     .attr("class", "annotations")
-        //
-        // lineForAnnotation.append("line")
-        //     .attr("x1", parseInt(x) + 15)
-        //     .attr("y1", y)
-        //     .attr("x2", (width / 1.9))
-        //     .attr("y2", margin.top)
-        //     .style("stroke", "slategray")
-        //     .style("stoke-width", 0.5)
-
-
-        // annotations.selectAll("line")
-        //     .data(chart_annotations[date])
-        //     .enter()
-        //     .append("line")
-        //     .attr("x1", parseInt(x)+15)
-        //     .attr("y1", y)
-        //     .attr("x2", parseInt(x)+15)
-        //     .attr("y2", y-118)
-        //     .style("stroke", "darkorange")
-        //     .style("stroke-width", 3)
-
-        // annotations.selectAll("text")
-        //     .data(chart_annotations[date])
-        //     .enter()
-        //     .append("text")
-        //     //.attr("x", margin.top / 2)
-        //     //.attr("y", height/2)
-        //     .style("fill", "darkorange")
-        //     .text("Hello there")
     }
 
 }
@@ -295,20 +261,20 @@ const createLegend = (svg, categories, colors, width, margin) => {
         .enter()
         .append("circle")
         .attr("cx", 0)
-        .attr("cy", (d, i) => i*16)
-        .attr("r", 5)
+        .attr("cy", (d, i) => i*13)
+        .attr("r", 4)
         .style("fill", (d) => categoryMap[d])
     legend.selectAll("text")
         .data(categories)
         .enter()
         .append("text")
         .attr("x", 9)
-        .attr("y", (d, i) => i*16+1)
+        .attr("y", (d, i) => i*13+3)
         .text((d) => d)
         .attr("text-anchor", "left")
         .style("alignment-baseline", "middle")
         .style("fill", (d) => categoryMap[d])
-        .style("font-size", 10)
+        .style("font-size", 9)
 
 }
 
@@ -649,16 +615,24 @@ export const BarChart = (svgElement, tooltip, crimeCategories, overviewData, tot
         repeatAnimation()
     }
 
+    const createTitle = () => {
+        const title = svg.append('g')
+            .attr('id', 'title')
+
+        title
+            .append('text')
+            // .transition()
+            // .duration(3000)
+            .attr('x', width/2)
+            .attr('y', margin.top/4)
+            .attr("text-anchor", "middle")
+            .attr('font-family', 'Georgia, serif')
+            .text(`NYC Monthly Crime Rate`)
+    }
+
     // Draws The first Annotation
     drawAnnotations(svg, key, barLocations[key].x, barLocations[key].y)
     createLegend(svg, categories, colors, width, margin)
+    createTitle()
     createPrepandemicAnnotations(svg, barLocations)
-    //startMessage()
-
-    //return {
-        //freeExploreMessage: freeExploreMessage,
-        //clearFreeExploreMessage: clearFreeExploreMessage,
-        //startMessage: startMessage,
-        //clearStartMessage: clearStartMessage
-    //}
 }

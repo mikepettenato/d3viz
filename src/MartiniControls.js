@@ -13,15 +13,7 @@ const martini_slides = [
 const martini_controls =
     `
     <input id="previous" type="button" value="<" style="height:30px;" disabled> 
-    <span id="month" class="controls">11</span><span class="controls">/</span>
-    <span id="year" class="controls">2019</span> 
-    <input id="next" type="button" value=">" style="height:30px">
-    `
-
-const free_explore_controls =
-    `
-    <input id="previous" type="button" value="<" style="height:30px"> 
-    <span id="month" class="controls">1</span><span class="controls">/</span>
+    <span id="month" class="controls" style="width:20px">11</span><span class="controls">/</span>
     <span id="year" class="controls">2019</span> 
     <input id="next" type="button" value=">" style="height:30px">
     `
@@ -162,7 +154,7 @@ export const MartiniControls = (martini_control_element, start_svg_element, free
 
     startMessage(start_svg_element)
 
-    const enableMartiniEvents = (bubbleChartControls, toolTipControls) => {
+    const enableMartiniEvents = (bubbleChartControls, lineChartControls, toolTipControls) => {
         select("#next").on("click", (e) => {
             if (in_martini_stem) {
                 clearStartMessage(start_svg_element)
@@ -186,6 +178,7 @@ export const MartiniControls = (martini_control_element, start_svg_element, free
                     bubbleChartControls.enableAnnotations()
                     toolTipControls.enable()
                     bubbleChartControls.enable()
+                    lineChartControls.enable()
                 }
             }else {
                 clearFreeExploreMessage(free_explore_svg_element)

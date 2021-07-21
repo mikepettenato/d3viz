@@ -113,7 +113,7 @@ const drawAnnotations = (svg, date, height, width, crimeMap) => {
             .append("text")
             .attr("class", "annotation")
             .attr("x", width / 2)
-            .attr("y", 20)
+            .attr("y", 40)
             .style("fill", crimeMap[crimeType])
             .style('font-size', '.25em')
             .attr("text-anchor", "middle")
@@ -128,16 +128,6 @@ const drawAnnotations = (svg, date, height, width, crimeMap) => {
             .style('font-size', '.85em')
             .duration(500)
 
-        // const lineAnnotation = svg.append("g")
-        // lineAnnotation.attr("class", "annotation")
-        // lineAnnotation
-        //     .append("line")
-        //     .attr("x1", cx)
-        //     .attr("y1", cy)
-        //     .attr("x2", width / 2)
-        //     .attr("y2", 20)
-        //     .style("stroke", "slategray")
-        //     .style("stoke-width", 0.5)
     }
 
 
@@ -152,7 +142,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
 
     const scaledCircle = scaleSqrt()
         .domain(findRange(data, partition))
-        .range([30, 130])
+        .range([30, 120])
 
     const svg = select(svg_element)
         .append("g")
@@ -171,36 +161,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .attr("fill", (category, i) => {
             return category.color
         })
-        /*
-        .on("mouseover", (e, d) => {
-            const monthDate = findKey(elemYearId, elemMonthId)
-            tooltip.showToolTip(tooltip.formatToolTip(
-                d.name,
-                data[monthDate][d.name],
-                crimeByMonth[monthDate],
-                monthDate,
-                ),
-                e.pageX, e.pageY)
 
-            // Make circle appear to raise when hovered over
-
-            select(e.target).transition().attr("filter", "url(#dropshadow)")
-        })
-        .on("mousemove", (e, d) => {
-            // tooltip
-            //     .style("left", (e.pageX + 20) + "px")
-            //     .style("top", e.pageY + "px")
-            tooltip.moveToolTip(e.pageX, e.pageY)
-        })
-        .on("mouseleave", (e, d)=> {
-            tooltip.hideToolTip()
-            // tooltip
-            //     .style("opacity", 0)
-
-            // Remove raised look look from circle
-            select(e.target).transition().attr("filter", "")
-        })
-        */
     const text = svg.selectAll("text")
         .data(categories)
         .enter()
@@ -209,7 +170,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
         .attr("class", ".annotation")
         .attr("text-anchor", "middle")
         .attr("fill", "black")
-        .attr("style", "font-size: 9")
+        .attr("style", "font-size: 8")
 
     text
         .append("tspan")
@@ -308,10 +269,6 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
                 })
 
         })
-
-    const martiniGlassSlideShow = [
-        ['2019-11']
-    ]
 
     const forward = () => {
         const key = findKey(elemYearId, elemMonthId)

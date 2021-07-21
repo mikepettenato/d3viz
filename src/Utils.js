@@ -86,24 +86,72 @@ export const ToolTip = (tooltipElement) => {
                                 <div>Demographic Breakdown of Offenders</div>
                                 <div class="tooltipRow">
                                     <div class="tooltipCol">
-                                        <div class="tooltipColHeader">All (total)</div>
-                                        <div class="tooltipCell">${all}</div>
+                                        <div class="tooltipColHeader tooltipAll">All (total)</div>
+                                        <div class="tooltipCell tooltipAll">${all}</div>
                                     </div>
                                     <div class="tooltipCol">
-                                        <div class="tooltipColHeader">Asian</div>
-                                        <div class="tooltipCell">${asian}</div>
+                                        <div class="tooltipColHeader tooltipAsian">Asian</div>
+                                        <div class="tooltipCell tooltipAsian">${asian}</div>
                                     </div>
                                     <div class="tooltipCol">
-                                        <div class="tooltipColHeader">Black</div>
-                                        <div class="tooltipCell">${black}</div>
+                                        <div class="tooltipColHeader tooltipBlack">Black</div>
+                                        <div class="tooltipCell tooltipBlack">${black}</div>
                                     </div>
                                     <div class="tooltipCol">
-                                        <div class="tooltipColHeader">Hispanic</div>
-                                        <div class="tooltipCell">${hispanic}</div>
+                                        <div class="tooltipColHeader tooltipHispanic">Hispanic</div>
+                                        <div class="tooltipCell tooltipHispanic">${hispanic}</div>
                                     </div>
                                     <div class="tooltipCol">
-                                        <div class="tooltipColHeader">White</div>
-                                        <div class="tooltipCell">${white}</div>
+                                        <div class="tooltipColHeader tooltipWhite">White</div>
+                                        <div class="tooltipCell tooltipWhite">${white}</div>
+                                    </div>
+                                </div>
+                                <div class="tooltipRow">
+                                    
+                                </div>
+                            </div>
+                        </div>
+        
+            `
+        },
+        formatLineChartToolTip: (title, data, the_date) => {
+            if (!tooltipsEnabled) {
+                return
+            }
+
+            const all = data[ALL_RACES]
+            const asian = data[ASIAN_PACIFIC_ISLANDER]
+            const black = data[BLACK]
+            const hispanic = data[HISPANIC]
+            const white = data[WHITE]
+            return `<div class="tooltipContainer">
+                            <div class="tooltipHeader">${title}</div>
+                            <div class="tooltipBody">
+                                <ul class="tooltipPara">
+                                    <li class="tooltipListItems">NYC had <b>${all}</b> total criminal incidents on ${the_date}.</li>  
+                                </ul>
+
+                                <div>Demographic Breakdown of Offenders</div>
+                                <div class="tooltipRow">
+                                    <div class="tooltipCol">
+                                        <div class="tooltipColHeader tooltipAll">All (total)</div>
+                                        <div class="tooltipCell tooltipAll">${all}</div>
+                                    </div>
+                                    <div class="tooltipCol">
+                                        <div class="tooltipColHeader tooltipAsian">Asian</div>
+                                        <div class="tooltipCell tooltipAsian">${asian}</div>
+                                    </div>
+                                    <div class="tooltipCol">
+                                        <div class="tooltipColHeader tooltipBlack">Black</div>
+                                        <div class="tooltipCell tooltipBlack">${black}</div>
+                                    </div>
+                                    <div class="tooltipCol">
+                                        <div class="tooltipColHeader tooltipHispanic">Hispanic</div>
+                                        <div class="tooltipCell tooltipHispanic">${hispanic}</div>
+                                    </div>
+                                    <div class="tooltipCol">
+                                        <div class="tooltipColHeader tooltipWhite">White</div>
+                                        <div class="tooltipCell tooltipWhite">${white}</div>
                                     </div>
                                 </div>
                                 <div class="tooltipRow">

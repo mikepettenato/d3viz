@@ -6,59 +6,63 @@
 </head>
 <body>
 <div id="tooltip" class="tooltip"></div>
-<div class="container">
-    <div class="chartHeader">The Impact of COVID-19 on the Monthly Crime Rate in New York City</div>
-    <div class="para" style="display: none">
-        The COVID-19 pandemic has affected our lives in many ways.
-        One way that this can be viewed is through its affect on the New York City crime rates.
-        This is especially noticable in the beginning few months of the pandemic.
-    </div>
-    <div class="bubbleControls">
-        <svg id="freeExploreMessageSvg" height="60" width="275"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
-        <div id="martini_controls">
-<!--            <input id="previous" type="button" value="<" style="height:30px"> <span id="month" class="controls">1</span><span class="controls">/</span><span id="year" class="controls">2019</span> <input id="next" type="button" value=">" style="height:30px">-->
+
+<div class="flexContainer">
+    <div class="container">
+        <div class="chartHeader">COVID-19 Impact on the Monthly Crime Rate in New York City</div>
+        <div class="bubbleControls">
+            <svg id="freeExploreMessageSvg" height="60" width="275"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
+            <div id="martini_controls"></div>
+            <svg id="startMessageSvg" height="30" width="100"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
         </div>
-        <svg id="startMessageSvg" height="30" width="100"  style="background-color: white; margin-bottom: -10px; padding:0"></svg>
-
-
+        <div>
+            <div id="bubbleCloudDiv" style="display: none;margin-top: 15px">
+                <div style="font-family: Georgia, serif; text-align: center">NYC Monthly Crime Distribution</div>
+                <svg id="bubbleCloud" height="700" width="700"  style="background-color: white">
+                    <defs>
+                        <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+                            <feOffset dx="5" dy="5" result="offsetblur"/>
+                            <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                            <feMerge>
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <div class="right">
+        <div>
+            <svg id="barChart" height="550" width="1100"  style="background-color: white">
+                <defs>
+                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
+                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
+                        <feOffset dx="5" dy="5" result="offsetblur"/>
+                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
+                        <feMerge>
+                            <feMergeNode/>
+                            <feMergeNode in="SourceGraphic"/>
+                            <feMergeNode in="SourceGraphic"/>
+                        </feMerge>
+                    </filter>
+                </defs>
+            </svg>
+        </div>
+        <div id="lineChartDiv" style="display: none">
+            <svg id="lineChart" height="350" width="1100"  style="background-color: white"></svg>
+        </div>
     </div>
 </div>
+
 <div class="chartContainer">
     <div class="row">
-        <div>
-            <svg id="barChart" height="800" width="1100"  style="background-color: white">
-                <defs>
-                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
-                        <feOffset dx="5" dy="5" result="offsetblur"/>
-                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
-                        <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-
-            </svg>
-        </div>
-        <div id="bubbleCloudDiv" style="display: none">
-            <svg id="bubbleCloud" height="800" width="700"  style="background-color: white">
-                <defs>
-                    <filter id="dropshadow" x="-40%" y="-40%" width="180%" height="180%" filterUnits="userSpaceOnUse">
-                        <feGaussianBlur in="SourceAlpha" stdDeviation="3"/> <!-- stdDeviation is how much to blur -->
-                        <feOffset dx="5" dy="5" result="offsetblur"/>
-                        <feOffset dx="-5" dy="-5" result="offsetblur"/>
-                        <feMerge>
-                            <feMergeNode/>
-                            <feMergeNode in="SourceGraphic"/>
-                            <feMergeNode in="SourceGraphic"/>
-                        </feMerge>
-                    </filter>
-                </defs>
-            </svg>
-        </div>
     </div>
+
+
 </div>
 <script>
         const martiniController = petcharts.MartiniControls("div#martini_controls", "svg#startMessageSvg", "svg#freeExploreMessageSvg")
@@ -68,9 +72,11 @@
                 const overviewData = petcharts.processOverviewData(data)
                 const crimeCategories = petcharts.processCrimeCategories(data)
                 const crimeByMonth = petcharts.processCrimeByMonth(crimeCategories, overviewData)
+                const dailyCrime = petcharts.processDailyCrimesMap(data)
                 // initialize tooltip
                 const tooltip = petcharts.ToolTip("div#tooltip")
                 await petcharts.BarChart("svg#barChart", tooltip, crimeCategories, overviewData, crimeByMonth, "span#year", "span#month")
+                const lineChartControls = await petcharts.LineChart("svg#lineChart", dailyCrime, tooltip, "span#year", "span#month")
                 const bubblChartControls = await petcharts.BubbleCloud(
                     "svg#bubbleCloud",
                     tooltip,
@@ -82,9 +88,11 @@
                     "span#month",
                     () => {
                         petcharts.highlightBar("svg#barChart", "span#year", "span#month")
+                        lineChartControls.update()
                     }
                 )
-                martiniController.enableEvents(bubblChartControls, tooltip)
+                martiniController.enableEvents(bubblChartControls, lineChartControls, tooltip)
+
                 //     .then((bubbleChartTransitions) => {
                 //     martiniController.enableEvents(bubbleChartTransitions)
                 // })
