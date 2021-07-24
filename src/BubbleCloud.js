@@ -138,6 +138,7 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
     const width = select(svg_element).attr("width")
     const height = select(svg_element).attr("height")
     const crimeMap = crimeTypeMap(categories)
+    let done_with_transition = false
     let enable_annotations = false
 
     const scaledCircle = scaleSqrt()
@@ -250,22 +251,28 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
                 .attr('d', (d, i) => voronoi.renderCell(i))
                 .on('mouseover', (e, d) => {
                     const monthDate = findKey(elemYearId, elemMonthId)
-                    tooltip.showToolTip(tooltip.formatToolTip(
-                        d.name,
-                        data[monthDate][d.name],
-                        crimeByMonth[monthDate],
-                        monthDate,
-                        ),
-                        e.pageX, e.pageY)
+                    if (done_with_transition) {
+                        tooltip.showToolTip(tooltip.formatToolTip(
+                            d.name,
+                            data[monthDate][d.name],
+                            crimeByMonth[monthDate],
+                            monthDate,
+                            ),
+                            e.pageX, e.pageY)
 
-                    select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "url(#dropshadow)")
+                        select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "url(#dropshadow)")
+                    }
                 })
                 .on('mousemove', (e, d) => {
-                    tooltip.moveToolTip(e.pageX, e.pageY)
+                    if (done_with_transition) {
+                        tooltip.moveToolTip(e.pageX, e.pageY)
+                    }
                 })
                 .on('mouseleave', (e, d) => {
-                    tooltip.hideToolTip()
-                    select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "")
+                    if (done_with_transition) {
+                        tooltip.hideToolTip()
+                        select(`circle#${d.name.replace(' ', '_')}`).transition().attr("filter", "")
+                    }
                 })
 
         })
@@ -335,6 +342,9 @@ export async function BubbleCloud(svg_element, tooltip, categories, data, crimeB
             .transition()
             .duration(5000)
             .style('opacity', 1)
+            .on('end', () => {
+                done_with_transition = true
+            })
     }
 
     return {

@@ -3,6 +3,7 @@ import {axisLeft, axisBottom} from 'd3-axis'
 import {pointer, select, selectAll} from 'd3-selection'
 import {scaleBand, scaleLinear, scaleTime} from 'd3-scale'
 import {line} from 'd3-shape'
+import {easeLinear} from 'd3-ease'
 
 import {findKey} from './Utils'
 
@@ -17,6 +18,7 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
     const svg = select(svg_element)
     const width = svg.attr('width')
     const height = svg.attr('height')
+    let done_with_transition = false
 
     const x = scaleTime().range([0, (width-(margin.left + margin.right))])
     const xAxis = axisBottom().scale(x)
@@ -169,11 +171,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .data([dates])
 
         all
-            .data([dates])
+            // .data([dates])
             .enter()
             .append('path')
             .attr('class', 'allLine')
-            //.merge(all)
+            .merge(all)
             .transition()
             .duration(3000)
             .attr('d', line()
@@ -194,11 +196,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .data([dates])
 
         asian
-            .data([dates])
+            // .data([dates])
             .enter()
             .append('path')
             .attr('class', 'asianLine')
-            //.merge(all)
+            .merge(asian)
             .transition()
             .duration(3000)
             .attr('d', line()
@@ -219,11 +221,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .data([dates])
 
         black
-            .data([dates])
+            // .data([dates])
             .enter()
             .append('path')
             .attr('class', 'blackLine')
-            //.merge(all)
+            .merge(black)
             .transition()
             .duration(3000)
             .attr('d', line()
@@ -244,11 +246,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .data([dates])
 
         hispanic
-            .data([dates])
+            // .data([dates])
             .enter()
             .append('path')
             .attr('class', 'hispanicLine')
-            //.merge(all)
+            .merge(hispanic)
             .transition()
             .duration(3000)
             .attr('d', line()
@@ -269,11 +271,11 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .data([dates])
 
         white
-            .data([dates])
+            // .data([dates])
             .enter()
             .append('path')
             .attr('class', 'whiteLine')
-            //.merge(all)
+            .merge(all)
             .transition()
             .duration(3000)
             .attr('d', line()
@@ -305,6 +307,9 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .attr('width', (width - (margin.left + margin.right)))
             .style('opacity', 0)
             .on('mousemove', (e) => {
+                if (!done_with_transition) {
+                    return
+                }
                 const coordinates = pointer(e, this)
                 const closest_date = x.invert(coordinates[0])
                 closest_date.setHours(closest_date.getHours() + 12)
@@ -339,6 +344,9 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
                 tooltip.moveToolTip(e.pageX, e.pageY)
             })
             .on('mouseout', (e) => {
+                if (!done_with_transition) {
+                    return
+                }
                 tooltip.hideToolTip()
                 select('g#tooltipLine').remove()
                 select('g#tooltipLine_all').remove()
@@ -387,6 +395,9 @@ export const LineChart = async (svg_element, weekly_data, tooltip, span_year, sp
             .transition()
             .duration(5000)
             .style('opacity', 1)
+            .on('end', () => {
+                done_with_transition = true
+            })
 
     }
 

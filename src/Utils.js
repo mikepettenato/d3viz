@@ -30,11 +30,11 @@ export const ToolTip = (tooltipElement) => {
             const windowWidth = window.innerWidth
             const windowHeight = window.innerHeight
 
-            let left = (pageX + 20) + "px"
+            let left = (pageX + 40) + "px"
             let top = pageY + "px"
 
-            if ((pageX + 20 + width) >= windowWidth) {
-                left = (pageX - 20 - width) + "px"
+            if ((pageX + 40 + width) >= windowWidth) {
+                left = (pageX - 40 - width) + "px"
             }
             if ((pageY + height) >= windowHeight) {
                 top = (pageY - height) + "px"
@@ -52,10 +52,10 @@ export const ToolTip = (tooltipElement) => {
             // select the tooltip
             const tooltip = select(tooltipElement)
 
-            let left = (pageX + 20) + "px"
+            let left = (pageX + 40) + "px"
             let top = pageY + "px"
             tooltip.html(tooltipHtml)
-                .style("opacity", 0.9)
+                .style("opacity", 0.85)
                 .style("left", left)
                 .style("top", top)
 
