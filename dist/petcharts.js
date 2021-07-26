@@ -34213,7 +34213,6 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
         .attr('class', 'lineYaxis')
 
     const drawLegend = () => {
-        console.log("draw legend")
         const legend = svg.append('g')
             .attr('transform', `translate(${width/1.2}, ${margin.top/2})`)
 
@@ -34362,9 +34361,9 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             )
             .attr('fill', 'none')
             .attr('stroke', '#00A0F0')
-            .on('end', () => {
-                console.log('Done')
-            })
+            // .on('end', () => {
+            //     console.log('Done')
+            // })
 
         const asian = g.selectAll('.asianLine')
             .data([dates])
@@ -34387,9 +34386,9 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             )
             .attr('fill', 'none')
             .attr('stroke', '#00FF00')
-            .on('end', () => {
-                console.log('Done')
-            })
+            // .on('end', () => {
+            //     console.log('Done')
+            // })
 
         const black = g.selectAll('.blackLine')
             .data([dates])
@@ -34412,9 +34411,9 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             )
             .attr('fill', 'none')
             .attr('stroke', '#C0C000')
-            .on('end', () => {
-                console.log('Done')
-            })
+            // .on('end', () => {
+            //     console.log('Done')
+            // })
 
         const hispanic = g.selectAll('.hispanicLine')
             .data([dates])
@@ -34437,9 +34436,9 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             )
             .attr('fill', 'none')
             .attr('stroke', '#A000FF')
-            .on('end', () => {
-                console.log('Done')
-            })
+            // .on('end', () => {
+            //     console.log('Done')
+            // })
 
         const white = g.selectAll('.whiteLine')
             .data([dates])
@@ -34462,9 +34461,9 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             )
             .attr('fill', 'none')
             .attr('stroke', '#600000')
-            .on('end', () => {
-                console.log('Done')
-            })
+            // .on('end', () => {
+            //     console.log('Done')
+            // })
 
         // add a rect to receive mouse events
         const rect_group = svg.append('g')
@@ -34534,7 +34533,6 @@ const LineChart = async (svg_element, weekly_data, tooltip, span_year, span_mont
             ;(0,d3_selection__WEBPACK_IMPORTED_MODULE_1__.default)('g#tooltipLine').remove()
             const tooltipLine = svg.append('g')
                 .attr('id', 'tooltipLine')
-            console.log("Drawing line: " + y(y1))
             tooltipLine
                 .append('line')
                 .attr('x1', x(x1) + margin.left)
@@ -34748,7 +34746,7 @@ const freeExploreMessage = (free_explore_svg) => {
     const height = svg.attr("height")
     const width = svg.attr("width")
 
-    console.log(width)
+    // console.log(width)
     const g = svg.append("g")
     g.attr("class", "free_explore")
     g.append("text")

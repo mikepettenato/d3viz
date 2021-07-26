@@ -100,7 +100,7 @@ const freeExploreMessage = (free_explore_svg) => {
     const height = svg.attr("height")
     const width = svg.attr("width")
 
-    console.log(width)
+    // console.log(width)
     const g = svg.append("g")
     g.attr("class", "free_explore")
     g.append("text")
