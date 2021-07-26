@@ -8,14 +8,16 @@ module.exports =
             path: path.resolve(__dirname, 'dist'),
             library: 'petcharts',
             libraryTarget: 'window',
+            pathinfo: true,
             // libraryExport: 'default'
         },
+        devtool: 'cheap-module-source-map',
         resolve: {
             alias: {
              'node_modules': path.join(__dirname, 'node_modules')
             }
         },
-        watch: true,
+        // watch: true,
         mode: 'development',
         devServer: {
             contentBase: __dirname,
