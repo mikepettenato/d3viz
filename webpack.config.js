@@ -17,7 +17,7 @@ module.exports =
              'node_modules': path.join(__dirname, 'node_modules')
             }
         },
-        // watch: true,
+        watch: true,
         mode: 'development',
         devServer: {
             contentBase: __dirname,
