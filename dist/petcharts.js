@@ -33195,19 +33195,22 @@ const findKey = (elemYearId, elemMonthId) => {
 
 const chart_annotations = {
     '2019-5' : [
-        'Crime peaks in New York City with 10,250 crimes committed in the month.',
+        'Crime peaks in New York City with',
+        '10,250 crimes committed in the month.',
         'COVID-19 is an unknown pathogen in the world'
     ],
     '2019-11' : [
         //, on November 11, 2019
-        'The first reported case of COVID-19 occurs in Hubei Provenance, China.',
-        "New Yorkers are largely unaware of the virus and there have been",
+        'The first reported case of COVID-19 occurs',
+        'in Hubei Provenance, China.  New Yorkers are',
+        'largely unaware of the virus and there have been',
         "8,395 crimes committed in New York City this month."
     ],
     '2019-12' : [
         //  on December 31, 2019
-        '44 cases of COVID-19 are reported in Wuhan, China and none in New York.',
-        '7,308 criminal incidents occurred this month, which is consistent with ',
+        '44 cases of COVID-19 are reported in Wuhan, China',
+        'and none in New York. 7,308 criminal incidents',
+        'occurred this month, which is consistent with',
         'the previous monthly averages for December.'
     ],
     '2020-1' : [
@@ -33235,23 +33238,23 @@ const chart_annotations = {
         ],
     '2020-4' : [
         // 4/10/2020:
-        "NY State records more COVID-19 cases than any other country other than the U.S.",
-        "New York City is in its first full month of lock down. ",
-        "5,006 crimes committed this month, which constitutes a",
-        "49% decrease in crime compared to the same time last year.",
+        "NY State records more COVID-19 cases than any other country",
+        "other than the U.S.  New York City is in its first full month of",
+        "lock down. 5,006 crimes committed this month, which constitutes",
+        "a 49% decrease in crime compared to the same time last year.",
     ],
     '2020-5' : [
         // 5/15/2020:
-        "New York tries to lift some restrictions. Drive-in theaters, landscaping ",
-        "and low-risk recreational activities are reopened.  The COVID rates, ",
-        "however, are increasing at an alarming rate and New York",
-        "is running out of hospital ventilators."
+        "New York tries to lift some restrictions. Drive-in theaters,landscaping",
+        "landscaping and low-risk recreational activities are reopened. The     ",
+        "COVID rates, however, are increasing at an alarming rate               ",
+        "and New York is running out of hospital ventilators.                   "
     ],
     '2020-6' : [
         // '06/24/2020:
-        'New York is fully locked down.  Quarantine restrictions are now in affect for travelers',
-        'arriving in NY. The crime rate in NYC has dropped by 44% compared to last year.',
-        '5,069 crimes have occurred this month.'
+        'New York is fully locked down.  Quarantine restrictions are now in affect',
+        'for travelers arriving in NY. The crime rate in NYC has dropped by',
+        '44% compared to last year. 5,069 crimes have occurred this month.  '
         // '06/08/2020: NYC begins phase 1 reopening',
         // '06/22/2020: NYC begins phase 2 reopening'
         ],
@@ -33269,30 +33272,30 @@ const chart_annotations = {
     ],
     '2020-9' : [
         // 09/08/2020:
-        'Sheriff deputies enforce signed quarantine forms from Port Authority buses',
+        'Sheriff deputies enforce signed quarantine forms from',
         // 09/09/2020:
-        'Malls in NYC reopen at 50% capacity',
+        'Port Authority buses Malls in NYC reopen at 50% capacity',
         // 09/16/2020:
         'Mayor de Blasio furloughs his City Hall staff, including himself'
     ],
     '2020-11' :[
         // 11/19/2020:
-        'New York City schools switch to all-remote',
+        'New York City schools switch to all-remote.',
         // 11/21/2020:
         'Restrictions on indoor dining are renewed in New York City.'
     ],
     '2021-2': [
         // 02/11/2021:
-        'Restaurants reopen indoor dining at 25% capacity',
+        'Restaurants reopen indoor dining at 25% capacity. New Yorkers',
         // 02/14/2021:
-        'New Yorkers with underlying conditions are eligible for COVID-19 vaccine.'
+        'with underlying conditions are eligible for COVID-19 vaccine.'
     ],
     '2021-3': [
         // 02/11/2021:
         'New York City has an 11.4% unemployment rate, due to the COVID-19 pandemic.',
-        "Restaurants start to reopen and create 15,0000 new jobs.",
+        "Restaurants start to reopen and create 15,0000 new jobs. New York City\'s ",
         // 02/14/2021:
-        'New York City\'s crime rate has increased by 5% when compared to March, 2020.'
+        'crime rate has increased by 5% when compared to March, 2020.'
     ]
 }
 
@@ -33303,8 +33306,9 @@ const clearAnnotations = (svg) => {
 const drawAnnotations = (svg, date, x, y) => {
     clearAnnotations(svg)
 
-    const height = svg.attr("height")
-    const width = svg.attr("height")
+    const height = parseInt(svg.attr("height"))
+    const width = parseInt(svg.attr("width"))
+
 
     let numberOfAnnotations = 0
     if (date in chart_annotations) {
@@ -33312,20 +33316,29 @@ const drawAnnotations = (svg, date, x, y) => {
     }
     if ((date in chart_annotations)) {
         const annotations = svg.append("g")
+        let x_translate = x + 50
+        let textAnchor = "start"
+        if (x > width/2) {
+            x_translate = x - 10
+            textAnchor = "end"
+        }
         annotations
             .attr("class", "annotations")
-            //.attr("transform", `translate(${x}, ${y-13*numberOfAnnotations})`)
-            .attr("transform", `translate(${(width)/1.5}, ${margin.top/1.7})`)
+            //.attr("transform", `translate(${(width)/2}, ${margin.top/1.7})`)
+            .attr("transform", `translate(${x_translate}, ${height/2})`)
         annotations.selectAll("text")
             .data(chart_annotations[date])
             .enter()
             .append("text")
             .attr("y", (d, i) => i*20)
-            //.attr("text-anchor", "middle")
+            //.attr("text-anchor", "start")
+            .attr("text-anchor", textAnchor)
             .attr("font-weight", 700)
-            .style('font-size', 16)
+            //.style('font-size', 16)
+            .style('font-size', 12)
             .style("fill", "darkorange")
-            .text((d, i) => chart_annotations[date][i])
+            .text((d, i) => chart_annotations[date][i].replace(' ', '\u00A0'))
+
     }
 
 }
@@ -33343,11 +33356,11 @@ const highlightBar = (svgElement, elemYearId, elemMonthId) => {
                 y = (0,d3_selection__WEBPACK_IMPORTED_MODULE_2__.default)(elements[i]).attr("y")
                 return 1
             }else{
-                return 0.1
+                return 0.05
             }
         })
 
-    drawAnnotations(svg, key, x, y)
+    drawAnnotations(svg, key, parseInt(x), parseInt(y))
 
 }
 
@@ -33632,7 +33645,7 @@ const BarChart = (svgElement, tooltip, crimeCategories, overviewData, totalCrime
                     if (arrestDate == key) {
                         return 1
                     }
-                    return 0.1
+                    return 0.05
                 })
                 .attr("x", d => {
                     const xVal = xAxis(d.data[_NycCrimeDataLoader__WEBPACK_IMPORTED_MODULE_1__.ARREST_DATE])
@@ -33764,7 +33777,7 @@ const BarChart = (svgElement, tooltip, crimeCategories, overviewData, totalCrime
     }
 
     // Draws The first Annotation
-    drawAnnotations(svg, key, barLocations[key].x, barLocations[key].y)
+    drawAnnotations(svg, key, parseInt(barLocations[key].x), parseInt(barLocations[key].y))
     createLegend(svg, categories, colors, width, margin)
     createTitle()
     createPrepandemicAnnotations(svg, barLocations)
